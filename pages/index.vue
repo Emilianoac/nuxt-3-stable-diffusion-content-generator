@@ -1,6 +1,24 @@
 <script lang="ts" setup>
-  import { z } from "zod"
-  import type { FormSubmitEvent } from "#ui/types"
+  const isOpen = ref(false)
+
+  interface FormCreateImageProps {
+    imageResult: {
+      link: string
+      isPending: boolean
+      error: boolean
+    },
+    imageParams: {
+      prompt: string
+      negative_prompt: string
+      style_preset: string
+      seed: number
+      steps: number
+      cfg_scale: number,
+      model: string
+      width: number
+      height: number
+    }
+  }
 
   // Reactive state for new image
   const newImage = reactive({
@@ -9,84 +27,33 @@
     error: false
   })
 
-  // List of styles preset available for the model
-  const styles_preset = [
-    "none",
-    "anime",
-    "3d-model",
-    "analog-film",
-    "cinematic",
-    "comic-book",
-    "digital-art",
-    "enhance",
-    "fantasy-art",
-    "isometric",
-    "line-art",
-    "low-poly",
-    "modeling-compound",
-    "neon-punk",
-    "origami",
-    "photographic",
-    "pixel-art",
-    "tile-texture"
-  ]
-
-  // Create zod schema
-  const schema = z.object({
-    prompt: z.string().min(1, "Prompt is required"),
-    negative_prompt: z.string().optional(),
-    style_preset: z.string().refine((val) => styles_preset.includes(val), {
-      message: "Invalid style preset"
-    }),
-    seed: z
-      .number()
-      .int("Seed must be integer number")
-      .nonnegative("Seed must be a positive number"),
-    steps: z
-      .number()
-      .min(10,"Min value is 1")
-      .max(20, "Max Value is 20")
-      .int("Steps must be integer number")
-      .positive("Steps must be a positive number"),
-    cfg_scale: z.
-      number()
-      .min(0)
-      .max(35)
-      .int("Scale must be integer number")
-      .positive("Scale must be a positive number"),
-  })
-
-  // Extract schema type
-  type Schema = z.output<typeof schema>
-
-  // Create reactive state
-  const state = reactive({
-    prompt: undefined,
-    negative_prompt: undefined,
-    style_preset: "none",
+  // Reactive state for image params
+  const imageParams = reactive({
+    prompt: "",
+    negative_prompt: "",
+    style_preset: "",
     seed: 0,
-    steps: 15,
-    cfg_scale: 7,
+    steps:0,
+    cfg_scale: 0,
+    model: "stable-diffusion-xl-1024-v1-0",
+    width: "1024px",
+    height: "1024px"
   })
-
-  // Submit data to the server
-  async function onSubmit (event: FormSubmitEvent<Schema>) {
-    try {
-      newImage.isPending = true
-      const res = await $fetch<Promise<{image: string}>>("api/create/text-to-image",{
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(event.data)
-      })
-      newImage.link = `data:image/png;base64,${res.image}`
-    } catch (error) {
-      newImage.error = true
-      console.error(error)
-    } finally {
-      newImage.isPending = false
-    }
+  
+  /**
+   * Handle new image event from FormCreateImage component
+   * @param data
+   */
+  function onNewImage(data : FormCreateImageProps) {
+    newImage.link = data.imageResult.link
+    newImage.isPending = data.imageResult.isPending
+    newImage.error = data.imageResult.error
+    imageParams.prompt = data.imageParams.prompt
+    imageParams.negative_prompt = data.imageParams.negative_prompt
+    imageParams.style_preset = data.imageParams.style_preset
+    imageParams.seed = data.imageParams.seed
+    imageParams.steps = data.imageParams.steps
+    imageParams.cfg_scale = data.imageParams.cfg_scale
   }
 </script>
 
@@ -95,62 +62,54 @@
     <MyLoading v-if="newImage.isPending" />
     <div class="grid lg:grid-cols-3 gap-5">
       <div>
-        <UCard>
-          <UForm :schema="schema" :state="state" class="space-y-4" @submit="onSubmit">    
-            <h1 class="font-bold text-lg">Create a new image</h1>        
-            <!-- Prompt -->
-            <UFormGroup label="Prompt" name="prompt">
-              <UTextarea v-model="state.prompt" placeholder="Insert prompt"/>
-            </UFormGroup>
-            
-            <!-- Negative Prompt -->
-            <UFormGroup label="Negative Prompt" name="negative_prompt">
-              <UTextarea v-model="state.negative_prompt" placeholder="Insert negative prompt"/>
-            </UFormGroup>
-
-            <!-- Style Preset --> 
-            <UFormGroup label="Style Preset" name="style_preset">
-              <USelect v-model="state.style_preset" :options="styles_preset"/>
-            </UFormGroup>
-
-            <!-- Seed -->
-            <UFormGroup label="Seed" name="seed">
-              <UInput v-model="state.seed" type="number" placeholder="Seed"/>
-            </UFormGroup>
-
-            <!-- Steps -->
-            <UFormGroup label="Steps" name="steps" :hint="state.steps.toString()">
-              <URange :min="10" :max="20" v-model="state.steps"/>
-            </UFormGroup>
-
-            <!-- Cfg_scale -->
-            <UFormGroup label="CFG Scale" name="cfg_scale" :hint="state.cfg_scale.toString()">
-              <URange :min="0" :max="35" v-model="state.cfg_scale"/>
-            </UFormGroup>
-
-            <!-- Submit -->
-            <div class="flex justify-end">
-              <UButton size="lg" class="ms-auto me-0 font-bold" type="submit">Generate</UButton>
-            </div>
-            <span class="text-xs opacity-40 mt-4 block">Model: stable-diffusion-xl-1024-v1-0</span>
-          </UForm>
-        </UCard>
+        <FormCreateImage @new-image="onNewImage"/>
       </div>
       <div class="lg:col-span-2 flex justify-center items-center">
+        <!-- Placholder Image -->
         <Icon v-if="!newImage.link" class="text-[20em] text-cloud-burst-900" name="material-symbols:image-outline"/>
+        <!-- Generated Image -->
         <div v-if="newImage.link" class="relative">
           <img class="rounded-md lg:h-[85vh]" :src="newImage.link">
-          <UButton 
-            size="xs" 
-            class="absolute top-2 right-2" 
-            :to="newImage.link" 
-            download="newImage.png">
-              Download Image
-              <Icon name="material-symbols:download-2"/>
+          <!-- Actions -->
+          <div class="absolute flex items-center top-2 right-2 ">
+            <UButton 
+              size="xs" 
+              class="me-2" 
+              :to="newImage.link" 
+              download="newImage.png">
+                Download Image <Icon name="material-symbols:download-2"/>
             </UButton>
+            <UTooltip text="Image Details">
+              <UButton label="Open" @click="isOpen = true">
+                <Icon name="material-symbols:info-outline"/>
+              </UButton>
+            </UTooltip>
+          </div>
         </div>
       </div>
     </div>
   </UContainer>
+  <!-- Generated image details -->
+  <UModal v-model="isOpen">
+    <UCard>
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold leading-6 text-gray-900 dark:text-white">
+            Image Details
+          </h3>
+          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="isOpen = false" />
+        </div>
+      </template>
+      <ul class="max-h-[400px] overflow-auto">
+        <li v-for="(value, key, index) in imageParams">
+          <template v-if="value">
+            <p class="font-bold ">{{ key.split("_").join(" ") }}</p>
+            <p class="opacity-70">{{ value }}</p>
+            <hr class="my-4 opacity-15">
+          </template>
+        </li>
+      </ul>
+    </UCard>
+  </UModal>
 </template>
 
