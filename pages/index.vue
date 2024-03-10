@@ -92,6 +92,7 @@
 
 <template>
   <UContainer class="my-5">
+    <MyLoading v-if="newImage.isPending" />
     <div class="grid lg:grid-cols-3 gap-5">
       <div>
         <UCard>
