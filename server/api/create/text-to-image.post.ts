@@ -53,5 +53,8 @@ export default defineEventHandler( async (event) => {
   }
 
   const data = await createImage(requestBody)
-  return {image: data.artifacts[0].base64} 
+  return {
+    image: data.artifacts[0].base64,
+    seed: data.artifacts[0].seed
+  } 
 })
