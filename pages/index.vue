@@ -78,16 +78,17 @@
         <div v-if="newImage.link" class="relative">
           <img class="rounded-md lg:h-[85vh]" :src="newImage.link">
           <!-- Actions -->
-          <div class="absolute flex items-center top-2 right-2 ">
+          <div class="absolute flex items-center justify-end top-0 right-0 p-2 w-full bg-gradient-to-b from-black  to-black/0 ">
             <UButton 
               size="xs" 
-              class="me-2" 
+              color="black"
+              class="me-2 font-bold" 
               :to="newImage.link" 
               download="newImage.png">
                 Download Image <Icon name="material-symbols:download-2"/>
             </UButton>
             <UTooltip text="Image Details">
-              <UButton label="Open" @click="isImageDetailsOpen = true">
+              <UButton color="black" label="Open" @click="isImageDetailsOpen = true">
                 <Icon name="material-symbols:info-outline"/>
               </UButton>
             </UTooltip>
