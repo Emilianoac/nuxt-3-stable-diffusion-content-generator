@@ -105,7 +105,7 @@
           <template v-if="value">
             <p class="font-bold ">{{ key.split("_").join(" ") }}</p>
             <p class="opacity-70">{{ value }}</p>
-            <hr class="my-4 opacity-15">
+            <hr class="my-2 opacity-15">
           </template>
         </li>
       </ul>
