@@ -1,11 +1,14 @@
 <script lang="ts" setup>
-  const isOpen = ref(false)
+  const isImageDetailsOpen = ref(false)
 
   interface FormCreateImageProps {
     imageResult: {
       link: string
       isPending: boolean
-      error: boolean
+      error: {
+        status: boolean
+        message: string
+      }
     },
     imageParams: {
       prompt: string
@@ -24,7 +27,10 @@
   const newImage = reactive({
     link: "",
     isPending: false,
-    error: false
+    error: {
+      status: false,
+      message: ""
+    }
   })
 
   // Reactive state for image params
@@ -47,7 +53,8 @@
   function onNewImage(data : FormCreateImageProps) {
     newImage.link = data.imageResult.link
     newImage.isPending = data.imageResult.isPending
-    newImage.error = data.imageResult.error
+    newImage.error.message = data.imageResult.error.message
+    newImage.error.status = data.imageResult.error.status
     imageParams.prompt = data.imageParams.prompt
     imageParams.negative_prompt = data.imageParams.negative_prompt
     imageParams.style_preset = data.imageParams.style_preset
@@ -80,7 +87,7 @@
                 Download Image <Icon name="material-symbols:download-2"/>
             </UButton>
             <UTooltip text="Image Details">
-              <UButton label="Open" @click="isOpen = true">
+              <UButton label="Open" @click="isImageDetailsOpen = true">
                 <Icon name="material-symbols:info-outline"/>
               </UButton>
             </UTooltip>
@@ -90,14 +97,14 @@
     </div>
   </UContainer>
   <!-- Generated image details -->
-  <UModal v-model="isOpen">
+  <UModal v-model="isImageDetailsOpen">
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
           <h3 class="text-lg font-bold leading-6 text-gray-900 dark:text-white">
             Image Details
           </h3>
-          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="isOpen = false" />
+          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="isImageDetailsOpen = false" />
         </div>
       </template>
       <ul class="max-h-[400px] overflow-auto">
@@ -109,6 +116,24 @@
           </template>
         </li>
       </ul>
+    </UCard>
+  </UModal>
+
+  <!-- Error Alert -->
+  <UModal v-model="newImage.error.status">
+    <UCard>
+      <template #header>
+        <div class="flex items-center justify-between">
+          <h3 class="text-lg font-bold leading-6 text-gray-900 dark:text-white">
+            An error ocurred
+          </h3>
+          <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="newImage.error.status = false" />
+        </div>
+      </template>
+      <div class="p-5 text-center">
+        <Icon name="material-symbols:warning" class="text-4xl text-red-500"/>
+        <p class="mt-3"> {{ newImage.error.message }} </p>
+      </div>
     </UCard>
   </UModal>
 </template>

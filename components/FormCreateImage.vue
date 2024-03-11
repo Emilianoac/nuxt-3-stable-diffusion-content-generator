@@ -8,7 +8,10 @@
   const newImage = reactive({
     link: "",
     isPending: false,
-    error: false
+    error: {
+      status: false,
+      message: ""
+    }
   })
 
   // List of styles preset available for the model
@@ -76,28 +79,29 @@
     const imageParams = Object.assign({}, event.data)
     try {
       newImage.isPending = true
-      emit("new-image", {
-        imageResult: newImage,
-        imageParams: imageParams
-      })
-      const res = await $fetch<Promise<{image: string, seed: number}>>("api/create/text-to-image",{
+      newImage.error.status = false
+      emit("new-image", { imageResult: newImage, imageParams: imageParams })
+      const {data, pending, error} = await useFetch("api/create/text-to-image",{
         method: "POST",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify(event.data)
       })
-      newImage.link = `data:image/png;base64,${res.image}`
-      imageParams.seed = res.seed
-    } catch (error) {
-      newImage.error = true
-      console.error(error)
+
+      // Handle fetch error
+      if (error.value) {
+        throw new Error(error.value.data.message)
+      }
+
+      newImage.link = `data:image/png;base64,${(data.value as { image: string }).image}` 
+      imageParams.seed = (data.value as { seed: number }).seed
+
+    } catch (error: any) {
+      newImage.error.status = true
+      newImage.error.message = error.message
     } finally {
       newImage.isPending = false
     }
-
-    emit("new-image", {
-      imageResult: newImage,
-      imageParams: imageParams
-    })
+    emit("new-image", { imageResult: newImage,  imageParams: imageParams })
   }
 </script>
 
