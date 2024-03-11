@@ -1,3 +1,5 @@
+import {z} from "zod"
+
 interface ImageParams {
   steps: string,
   seed: number
@@ -7,9 +9,38 @@ interface ImageParams {
   style_preset: string
 }
 
+const ImageParamsSchema = z.object({
+  steps: z
+    .number()
+    .max(20, "The maximum number of steps is 20"),
+  seed: z.number(),
+  cfg_scale: z
+    .number()
+    .max(35, "The maximum value for cfg_scale is 35"),
+  prompt: z
+    .string()
+    .refine((val) => val.trim().length > 0, { message: "Prompt cannot be empty"}),
+  negative_prompt: z
+    .string()
+    .optional(),
+  style_preset: z.string()
+})
+
 export default defineEventHandler( async (event) => {
   const runtimeConfig = useRuntimeConfig()
   const requestBody = await readBody<ImageParams>(event)
+
+  console.log(requestBody)
+
+  // Validate the request body
+  const validatedParams = ImageParamsSchema.safeParse(requestBody)
+  if (!validatedParams.success) {
+    const errors = validatedParams.error.errors.map((error) => `Error: ${error.message}`).join(", ")
+    throw createError({
+      status: 400,
+      message: errors ,
+    })
+  }
   
   async function createImage(params: ImageParams) {
     const apiEngine = "stable-diffusion-xl-1024-v1-0"
@@ -42,14 +73,14 @@ export default defineEventHandler( async (event) => {
       style_presets: params.style_preset
     }
 
-    const res = await fetch(`${apiHost}/v1/generation/${apiEngine}/text-to-image`, {
-      headers: headers,
-      method: "POST",
-      body: JSON.stringify(body)
-    })
-
-    const data: TextToImageResponse = await res.json()
-    return data
+      const res = await fetch(`${apiHost}/v1/generation/${apiEngine}/text-to-image`, {
+        headers: headers,
+        method: "POST",
+        body: JSON.stringify(body)
+      })
+  
+      const data: TextToImageResponse = await res.json()
+      return data
   }
 
   const data = await createImage(requestBody)
