@@ -1,6 +1,7 @@
-# Nuxt 3 Minimal Starter
+# Stable Diffusion generator
 
-Look at the [Nuxt 3 documentation](https://nuxt.com/docs/getting-started/introduction) to learn more.
+An AI image generator using the API of stability.ai and Nuxt 3 
+
 
 ## Setup
 
