@@ -81,8 +81,8 @@
       newImage.isPending = true
       newImage.error.status = false
       emit("new-image", { imageResult: newImage, imageParams: imageParams })
-      const {data, pending, error} = await useFetch("api/create/text-to-image",{
-        method: "POST",
+      const {data, pending, error} = await useCsrfFetch("api/create/text-to-image",{
+        method: "post",
         headers: { "Content-Type": "application/json"},
         body: JSON.stringify(event.data)
       })
