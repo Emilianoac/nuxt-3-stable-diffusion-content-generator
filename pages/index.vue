@@ -62,6 +62,10 @@
     imageParams.steps = data.imageParams.steps
     imageParams.cfg_scale = data.imageParams.cfg_scale
   }
+
+  function reloadPage() {
+    window.location.reload()
+  }
 </script>
 
 <template>
@@ -134,6 +138,10 @@
       <div class="p-5 text-center">
         <Icon name="material-symbols:warning" class="text-4xl text-red-500"/>
         <p class="mt-3"> {{ newImage.error.message }} </p>
+        <div v-if="newImage.error.message === 'CSRF Token Mismatch'">
+          <p class="text-xs"> Please reload the page </p>
+          <UButton color="white" class="mt-3" @click="reloadPage">Reload Page</UButton>
+        </div>
       </div>
     </UCard>
   </UModal>
