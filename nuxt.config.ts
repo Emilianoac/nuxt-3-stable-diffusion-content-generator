@@ -16,4 +16,15 @@ export default defineNuxtConfig({
   colorMode: {
     preference: "dark"
   },
+  hooks: {
+    'vite:extendConfig' (viteInlineConfig, env) {
+      viteInlineConfig.server = {
+        ...viteInlineConfig.server,
+        hmr: {
+          protocol: 'ws',
+          host: 'localhost',
+        },
+      }
+    },
+  },
 })
