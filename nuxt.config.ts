@@ -3,7 +3,7 @@ export default defineNuxtConfig({
   devtools: { enabled: true },
   app: {
     head: {
-      title: "Stable Diffusion generator", 
+      title: "Pixur | AI Image generator", 
     }
   },
   modules: [
