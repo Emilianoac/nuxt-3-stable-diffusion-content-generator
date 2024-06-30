@@ -77,7 +77,7 @@
       </div>
       <div class="lg:col-span-2 flex justify-center items-center">
         <!-- Placholder Image -->
-        <Icon v-if="!newImage.link" class="text-[20em] text-cloud-burst-900" name="material-symbols:image-outline"/>
+        <Icon v-if="!newImage.link" class="text-[20em] text-cloud-burst-500" name="material-symbols:image-outline"/>
         <!-- Generated Image -->
         <div v-if="newImage.link" class="relative">
           <img class="rounded-md lg:h-[85vh]" :src="newImage.link">
@@ -145,5 +145,7 @@
       </div>
     </UCard>
   </UModal>
+
+  <ModalAuth :is-open="true" />
 </template>
 
