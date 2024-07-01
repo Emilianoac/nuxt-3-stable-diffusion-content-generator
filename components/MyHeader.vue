@@ -32,9 +32,9 @@
 
 <template>
   <header class="p-3 bg-cloud-burst-800 border-b border-b-cloud-burst-600">
-    <UContainer class="flex justify-center md:justify-between items-center">
+    <UContainer class="flex justify-between items-center">
       <nuxt-link to="/">
-        <img class="max-w-[100px]" src="/logo.svg" alt="Site logo"/>
+        <img class="max-w-[80px] md:max-w-[100px]" src="/logo.svg" alt="Site logo"/>
       </nuxt-link>
       <div class="flex items-center">
         <USkeleton 

@@ -71,19 +71,23 @@
 
 <template>
   <UContainer class="my-5">
-    <MyLoading :loading="newImage.isPending" message="Generating Image..." />
+    <MyLoading :loading="newImage.isPending" message="Generating Image..."/>
     <div class="grid lg:grid-cols-3 gap-5">
-      <div>
+      <div class="order-1 lg:order-0">
         <FormCreateImage @new-image="onNewImage"/>
       </div>
-      <div class="lg:col-span-2 flex justify-center items-center">
+      <div class="lg:col-span-2 flex justify-center items-center order-0 lg:order-1">
         <!-- Placholder Image -->
-        <Icon v-if="!newImage.link" class="text-[20em] text-cloud-burst-500" name="material-symbols:image-outline"/>
+        <Icon 
+          v-if="!newImage.link" 
+          class=" text-[10em] lg:text-[20em] text-cloud-burst-500" 
+          name="material-symbols:image-outline"
+        />
         <!-- Generated Image -->
         <div v-if="newImage.link" class="relative">
           <img class="rounded-md lg:h-[85vh]" :src="newImage.link">
           <!-- Actions -->
-          <div class="absolute flex items-center justify-end top-0 right-0 p-2 w-full bg-gradient-to-b from-black  to-black/0 ">
+          <div class="absolute flex items-center justify-end top-0 right-0 p-2 w-full bg-gradient-to-b from-black to-black/0 ">
             <UButton 
               size="xs" 
               color="black"

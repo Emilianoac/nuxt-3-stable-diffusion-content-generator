@@ -35,6 +35,9 @@ export default defineAppConfig({
           solid: 'dark:bg-cloud-burst-500',
         }
       }
+    },
+    modal: {
+      container: 'items-center',
     }
   },
 });
