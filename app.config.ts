@@ -28,6 +28,13 @@ export default defineAppConfig({
         base: 'dark:bg-cloud-burst-300',
         color: 'text-{color}-500 dark:text-{color}-200',
       }
+    },
+    button: {
+      color : {
+        gray: {
+          solid: 'dark:bg-cloud-burst-500',
+        }
+      }
     }
   },
 });
