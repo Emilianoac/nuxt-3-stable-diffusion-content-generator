@@ -34,15 +34,20 @@
       modal.open(ModalLogin);
       return;
     }
+    // Get user token to validate request
+    const accessToken = await globalState.user.getIdToken()
     
     const imageParams = Object.assign({}, event.data);
     try {
       newImage.isPending = true;
       newImage.error.status = false;
       emit("new-image", { imageResult: newImage, imageParams: imageParams });
-      const {data, pending, error} = await useCsrfFetch("api/create/text-to-image",{
+      const {data, pending, error} = await useFetch("api/create/text-to-image",{
         method: "post",
-        headers: { "Content-Type": "application/json"},
+        headers: { 
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${accessToken}`
+        },
         body: JSON.stringify(event.data)
       })
 

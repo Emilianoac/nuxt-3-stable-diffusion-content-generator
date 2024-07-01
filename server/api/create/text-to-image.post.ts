@@ -1,55 +1,61 @@
-import {z} from "zod"
-
-interface ImageParams {
-  steps: string,
-  seed: number
-  cfg_scale: number
-  prompt: string,
-  negative_prompt?: string,
-  style_preset: string
-}
-
-const ImageParamsSchema = z.object({
-  steps: z
-    .number()
-    .max(20, "The maximum number of steps is 20"),
-  seed: z.number(),
-  cfg_scale: z
-    .number()
-    .max(35, "The maximum value for cfg_scale is 35"),
-  prompt: z
-    .string()
-    .refine((val) => val.trim().length > 0, { message: "Prompt cannot be empty"}),
-  negative_prompt: z
-    .string()
-    .optional(),
-  style_preset: z.string()
-})
+import { initAdmin } from "@/server/utils/firebaseAdmin";
+import { getAuth } from "firebase-admin/auth";
+import { imageSchema, type ImageSchema } from "@/schemas/imageSchema";
 
 export default defineEventHandler( async (event) => {
-  const runtimeConfig = useRuntimeConfig()
-  const requestBody = await readBody<ImageParams>(event)
+  // Get the runtime configuration for environment variables
+  const runtimeConfig = useRuntimeConfig();
+  // Get the request body
+  const requestBody = await readBody<ImageSchema>(event);
+  // Get firebase id token from the request headers
+  const idToken = getRequestHeader(event, "Authorization")?.split(' ')[1];
 
-  // Validate the request body
-  const validatedParams = ImageParamsSchema.safeParse(requestBody)
+  // Initialize the Firebase Admin app
+  await initAdmin();
+  const auth = getAuth();
+
+  // Return an error if the idToken is missing
+  if (!idToken) {
+    throw createError({
+      status: 401,
+      message: "Authorization header is missing",
+    });
+  }
+
+  // Return an error if the idToken is invalid
+  await auth.verifyIdToken(idToken).then((decodedToken) => {
+
+  }).catch((error) => {
+    throw createError({
+      status: 401,
+      message: "Invalid authorization token",
+    });
+  });
+
+
+  // Validate the request body with zod schema
+  const validatedParams = imageSchema.safeParse(requestBody);
   if (!validatedParams.success) {
     const errors = validatedParams.error.errors.map((error) => `Error: ${error.message}`).join(", ")
     throw createError({
       status: 400,
-      message: errors ,
+      message: errors,
     })
   }
   
-  async function createImage(params: ImageParams) {
-    const apiEngine = "stable-diffusion-xl-1024-v1-0"
-    const apiHost = "https://api.stability.ai"
-    const apiKey = runtimeConfig.stableDiffusionKey
+  /**
+   * Create an image using the stability AI API
+   */
+  async function createImage(params: ImageSchema) {
+    const apiEngine = "stable-diffusion-xl-1024-v1-0";
+    const apiHost = "https://api.stability.ai";
+    const apiKey = runtimeConfig.stableDiffusionKey;
 
     const headers = {
       "Accept": "application/json",
       "Content-Type": "application/json",
       "Authorization": `Bearer ${apiKey}`
-    }
+    };
 
     const body = {
       steps: params.steps,
@@ -60,55 +66,41 @@ export default defineEventHandler( async (event) => {
       cfg_scale: params.cfg_scale,
       text_prompts: [
         { text: params.prompt, weight: 0.5 },
-        { text: params.negative_prompt ? params.negative_prompt : "ugly, deformed, poor quality, blurry, bad anatomy", weight: -1}
+        { text: params.negative_prompt ? 
+          params.negative_prompt : 
+          "ugly, deformed, poor quality, blurry, bad anatomy", 
+          weight: -1
+        }
       ],
       style_presets: params.style_preset
-    } 
+    };
 
     const res = await fetch(`${apiHost}/v1/generation/${apiEngine}/text-to-image`, {
       headers: headers,
       method: "POST",
       body: JSON.stringify(body)
-    })
+    });
 
-    if (res.status != 200) {
-      const error = await res.json()
-      // Create a custom error message when the prompt contains invalid words for stability AI
-      if (error.name === "invalid_prompts") {
+    const data = await res.json();
+
+    if (!res.ok) {
+      if (data.name === "content_moderation") {
         throw createError({ 
           status: 400, 
-          message: `
-          stability.ai API considers that your prompt may be inappropriate according to 
-          its guidelines. Please try again with different prompts.
-          `,
+          message: "The prompt contains inappropriate content, please try again."
         })
-      }
-      // Throw a generic error message when the request fails
-      throw createError({ 
-        status: 500, 
-        message: "Stability AI: Internal server error. Please try again later.",
-      })
-    }
-
-    const data = await res.json()
-
-    // Check if the response contains the expected data
-    if (data.artifacts[0].base64 && data.artifacts[0].seed) {
-      if (data.artifacts[0].finishReason !== "CONTENT_FILTERED") {
-        return data
       } else {
         throw createError({ 
-          status: 400, 
-          message: `
-            stability.ai API considers that your prompt may be inappropriate according to 
-            its guidelines. Please try again with different prompts.
-          `,
+          status: 500, 
+          message: "An error occurred, please try again."
         })
       }
     }
+
+    return data;
   }
 
-  const data = await createImage(requestBody)
+  const data = await createImage(requestBody);
   return {
     seed: data.artifacts[0].seed,
     image: data.artifacts[0].base64,
