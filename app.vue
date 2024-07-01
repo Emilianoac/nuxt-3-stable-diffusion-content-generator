@@ -1,7 +1,13 @@
 
+<script lang="ts" setup>
+  const { globalState} = useFirebaseAuth();
+</script>
+
 <template>
+  <MyLoading :loading="globalState.loading"/>
   <MyHeader/>
   <NuxtPage/>
+  <UModals/>
 </template>
 
 <style lang="postcss">

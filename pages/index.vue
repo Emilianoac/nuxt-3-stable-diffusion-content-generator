@@ -1,5 +1,4 @@
 <script lang="ts" setup>
-  const isImageDetailsOpen = ref(false)
 
   interface FormCreateImageProps {
     imageResult: {
@@ -22,6 +21,8 @@
       height: number
     }
   }
+
+  const isImageDetailsOpen = ref(false)
 
   // Reactive state for new image
   const newImage = reactive({
@@ -70,7 +71,7 @@
 
 <template>
   <UContainer class="my-5">
-    <MyLoading v-if="newImage.isPending" />
+    <MyLoading :loading="newImage.isPending" message="Generating Image..." />
     <div class="grid lg:grid-cols-3 gap-5">
       <div>
         <FormCreateImage @new-image="onNewImage"/>
@@ -145,7 +146,5 @@
       </div>
     </UCard>
   </UModal>
-
-  <ModalAuth :is-open="true" />
 </template>
 

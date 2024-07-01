@@ -1,7 +1,10 @@
 <script lang="ts" setup>
-  import { z } from "zod"
   import type { FormSubmitEvent } from "#ui/types"
+  import ModalLogin from "@/components/ModalLogin.vue"
+  import { imageSchema, styles_preset, type ImageSchema } from "@/schemas/imageSchema";
 
+  const { globalState } = useFirebaseAuth()
+  const modal = useModal()
   const emit = defineEmits(["new-image"])
 
   // Reactive state for new image
@@ -14,56 +17,6 @@
     }
   })
 
-  // List of styles preset available for the model
-  const styles_preset = [
-    "none",
-    "anime",
-    "3d-model",
-    "analog-film",
-    "cinematic",
-    "comic-book",
-    "digital-art",
-    "enhance",
-    "fantasy-art",
-    "isometric",
-    "line-art",
-    "low-poly",
-    "modeling-compound",
-    "neon-punk",
-    "origami",
-    "photographic",
-    "pixel-art",
-    "tile-texture"
-  ]
-
-  // Create zod schema
-  const schema = z.object({
-    prompt: z.string().min(1, "Prompt is required"),
-    negative_prompt: z.string().optional(),
-    style_preset: z.string().refine((val) => styles_preset.includes(val), {
-      message: "Invalid style preset"
-    }),
-    seed: z
-      .number()
-      .int("Seed must be integer number")
-      .nonnegative("Seed must be a positive number"),
-    steps: z
-      .number()
-      .min(10,"Min value is 1")
-      .max(20, "Max Value is 20")
-      .int("Steps must be integer number")
-      .positive("Steps must be a positive number"),
-    cfg_scale: z.
-      number()
-      .min(0)
-      .max(35)
-      .int("Scale must be integer number")
-      .positive("Scale must be a positive number"),
-  })
-
-  // Extract schema type
-  type Schema = z.output<typeof schema>
-
   // Create reactive state
   const state = reactive({
     prompt: undefined,
@@ -75,12 +28,18 @@
   })
 
   // Submit data to the server
-  async function onSubmit (event: FormSubmitEvent<Schema>) {
-    const imageParams = Object.assign({}, event.data)
+  async function onSubmit (event: FormSubmitEvent<ImageSchema>) {
+    // If user is not logged in, open login modal
+    if (!globalState.user) {
+      modal.open(ModalLogin);
+      return;
+    }
+    
+    const imageParams = Object.assign({}, event.data);
     try {
-      newImage.isPending = true
-      newImage.error.status = false
-      emit("new-image", { imageResult: newImage, imageParams: imageParams })
+      newImage.isPending = true;
+      newImage.error.status = false;
+      emit("new-image", { imageResult: newImage, imageParams: imageParams });
       const {data, pending, error} = await useCsrfFetch("api/create/text-to-image",{
         method: "post",
         headers: { "Content-Type": "application/json"},
@@ -89,19 +48,19 @@
 
       // Handle fetch error
       if (error.value) {
-        throw new Error(error.value.data.message)
+        throw new Error(error.value.data.message);
       }
 
-      newImage.link = `data:image/png;base64,${(data.value as { image: string }).image}` 
-      imageParams.seed = (data.value as { seed: number }).seed
+      newImage.link = `data:image/png;base64,${(data.value as { image: string }).image}`; 
+      imageParams.seed = (data.value as { seed: number }).seed;
 
     } catch (error: any) {
-      newImage.error.status = true
-      newImage.error.message = error.message
+      newImage.error.status = true;
+      newImage.error.message = error.message;
     } finally {
-      newImage.isPending = false
+      newImage.isPending = false;
     }
-    emit("new-image", { imageResult: newImage,  imageParams: imageParams })
+    emit("new-image", { imageResult: newImage,  imageParams: imageParams });
   }
 </script>
 
@@ -109,7 +68,7 @@
 
 <UForm 
   class="space-y-4 dark:bg-cloud-burst-800 p-4 rounded-md" 
-  :schema="schema" 
+  :schema="imageSchema" 
   :state="state" 
   @submit="onSubmit">
   <h1 class="font-bold text-lg">Create a new image</h1>
