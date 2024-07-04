@@ -1,31 +1,11 @@
 <script lang="ts" setup>
-  import type { FormSubmitEvent } from "#ui/types"
   import ModalLogin from "@/components/ModalLogin.vue"
   import { imageSchema, styles_preset, type ImageSchema } from "@/schemas/imageSchema";
+  import type { FormSubmitEvent } from "#ui/types"
+  import type { EndpointResponse} from "@/types/index";
 
-  const { globalState } = useFirebaseAuth()
+  const {globalState} = useGlobalState();
   const modal = useModal()
-  const emit = defineEmits(["new-image"])
-
-  // Reactive state for new image
-  const newImage = reactive({
-    link: "",
-    isPending: false,
-    error: {
-      status: false,
-      message: ""
-    }
-  })
-
-  // Create reactive state
-  const state = reactive({
-    prompt: undefined,
-    negative_prompt: undefined,
-    style_preset: "none",
-    seed: 0,
-    steps: 15,
-    cfg_scale: 7,
-  })
 
   // Submit data to the server
   async function onSubmit (event: FormSubmitEvent<ImageSchema>) {
@@ -37,11 +17,9 @@
     // Get user token to validate request
     const accessToken = await globalState.user.getIdToken()
     
-    const imageParams = Object.assign({}, event.data);
     try {
-      newImage.isPending = true;
-      newImage.error.status = false;
-      emit("new-image", { imageResult: newImage, imageParams: imageParams });
+      globalState.generatedImage.isPending = true;
+      globalState.generatedImage.error.status = false;
       const {data, pending, error} = await useFetch("api/create/text-to-image",{
         method: "post",
         headers: { 
@@ -50,22 +28,19 @@
         },
         body: JSON.stringify(event.data)
       })
-
+      
       // Handle fetch error
       if (error.value) {
         throw new Error(error.value.data.message);
       }
-
-      newImage.link = `data:image/png;base64,${(data.value as { image: string }).image}`; 
-      imageParams.seed = (data.value as { seed: number }).seed;
+      globalState.generatedImage.data = data.value as EndpointResponse;
 
     } catch (error: any) {
-      newImage.error.status = true;
-      newImage.error.message = error.message;
+      globalState.generatedImage.error.status = true;
+      globalState.generatedImage.error.message = error.message;
     } finally {
-      newImage.isPending = false;
+      globalState.generatedImage.isPending = false;
     }
-    emit("new-image", { imageResult: newImage,  imageParams: imageParams });
   }
 </script>
 
@@ -74,7 +49,7 @@
 <UForm 
   class="space-y-4 dark:bg-cloud-burst-800 p-4 rounded-md" 
   :schema="imageSchema" 
-  :state="state" 
+  :state="globalState.formImage" 
   @submit="onSubmit">
   <h1 class="font-bold text-lg">Create a new image</h1>
   <!-- Prompt -->
@@ -102,7 +77,7 @@
       </UPopover>
     </template>
     <template #default>
-      <UTextarea v-model="state.prompt" placeholder="Insert prompt" />
+      <UTextarea v-model="globalState.formImage.prompt" placeholder="Insert prompt" />
     </template> 
   </UFormGroup>
 
@@ -131,7 +106,7 @@
       </UPopover>
     </template>
     <template #default>
-      <UTextarea v-model="state.negative_prompt" placeholder="Insert negative prompt" />
+      <UTextarea v-model="globalState.formImage.negative_prompt" placeholder="Insert negative prompt" />
     </template> 
   </UFormGroup>
 
@@ -157,7 +132,7 @@
       </UPopover>
     </template>
     <template #default>
-      <USelect v-model="state.style_preset" :options="styles_preset" />
+      <USelect v-model="globalState.formImage.style_preset" :options="styles_preset" />
     </template> 
   </UFormGroup>
 
@@ -184,7 +159,7 @@
       </UPopover>
     </template>
     <template #default>
-      <UInput v-model="state.seed" type="number" placeholder="Seed" />
+      <UInput v-model="globalState.formImage.seed" type="number" placeholder="Seed" />
     </template> 
   </UFormGroup>
 
@@ -193,7 +168,7 @@
     name="steps" 
     :ui="{label: { base: 'flex justify-between items-center w-full mb-1'}}">
     <template #label>
-      <span >Steps: <strong>{{ state.steps.toString()}}</strong> </span>
+      <span >Steps: <strong>{{ globalState.formImage.steps.toString()}}</strong> </span>
       <UPopover :ui="{wrapper: 'flex'}">
         <UButton 
           size="2xs" 
@@ -210,7 +185,7 @@
       </UPopover>
     </template>
     <template #default>
-      <URange :min="10" :max="20" v-model="state.steps" />
+      <URange :min="10" :max="20" v-model="globalState.formImage.steps" />
     </template> 
   </UFormGroup>
 
@@ -219,7 +194,7 @@
     name="cfg_scale"
     :ui="{label: { base: 'flex justify-between items-center w-full mb-1'}}">
     <template #label>
-      <span >CFG Scale: <strong>{{ state.cfg_scale.toString()}}</strong> </span>
+      <span >CFG Scale: <strong>{{ globalState.formImage.cfg_scale.toString()}}</strong> </span>
       <UPopover :ui="{wrapper: 'flex'}">
         <UButton 
           size="2xs" 
@@ -240,7 +215,7 @@
       </UPopover>
     </template>
     <template #default>
-      <URange :min="0" :max="35" v-model="state.cfg_scale" />
+      <URange :min="0" :max="35" v-model="globalState.formImage.cfg_scale" />
     </template> 
   </UFormGroup>
 

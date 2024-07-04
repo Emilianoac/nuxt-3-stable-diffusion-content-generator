@@ -1,6 +1,6 @@
 
 <script lang="ts" setup>
-  const { globalState} = useFirebaseAuth();
+  const {globalState} = useGlobalState();
 </script>
 
 <template>
