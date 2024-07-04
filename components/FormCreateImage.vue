@@ -34,6 +34,7 @@
         throw new Error(error.value.data.message);
       }
       globalState.generatedImage.data = data.value as EndpointResponse;
+      globalState.savingImage.status = false;
 
     } catch (error: any) {
       globalState.generatedImage.error.status = true;

@@ -21,6 +21,10 @@ const globalState = reactive({
       message: '',
     }
   } as GeneratedImage,
+  savingImage: {
+    isPending: false,
+    status: false,
+  }
 });
 export default function () {
   return { globalState };

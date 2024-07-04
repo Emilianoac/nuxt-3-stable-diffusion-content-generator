@@ -8,6 +8,7 @@
   <MyHeader/>
   <NuxtPage/>
   <UModals/>
+  <UNotifications/>
 </template>
 
 <style lang="postcss">

@@ -19,7 +19,8 @@ export interface EndpointResponse {
     cfg_scale: number
     dimensions: string
     samples: number
-    model: string
+    model: string,
+    style_preset: string
   }
 }
 

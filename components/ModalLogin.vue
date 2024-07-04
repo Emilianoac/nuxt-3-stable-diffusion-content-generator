@@ -2,7 +2,7 @@
   import { userSchema, type User } from "@/schemas/userSchema"
   import type { FormSubmitEvent } from "#ui/types"
 
-  const { login } = useFirebaseAuth();
+  const { login } = useFirebase();
   const {globalState} = useGlobalState();
   const modal = useModal();
   const formLogin = reactive({ email: "", password: ""});

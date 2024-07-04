@@ -2,7 +2,7 @@
   import ModalLogin from "@/components/ModalLogin.vue";
   import ModalRegister from "@/components/ModalRegister.vue";
 
-  const { getCurrentUser, logout} = useFirebaseAuth();
+  const { getCurrentUser, logout} = useFirebase();
   const {globalState} = useGlobalState();
   const modal = useModal();
 
