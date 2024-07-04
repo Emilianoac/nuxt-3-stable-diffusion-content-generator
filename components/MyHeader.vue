@@ -10,14 +10,14 @@
     [
       {
         label: "",
-        slot: 'account',
+        slot: "account",
         disabled: true
       }
     ],  
     [
       {
-        label: 'Sign out',
-        icon: 'i-heroicons-arrow-left-on-rectangle',
+        label: "Sign out",
+        icon: "i-heroicons-arrow-left-on-rectangle",
         click () {
           logout()
         }
@@ -58,32 +58,41 @@
             </UButton>
           </template>
           <template v-else>
-            <UDropdown 
-              :popper="{ arrow: true }"
-              :items="items" 
-              :ui="{ width: 'w-[auto]', item: { disabled: 'cursor-text select-text' }}">
-
-              <UAvatar 
-                :ui="{ background: 'dark:bg-cloud-burst-950 hover:dark:bg-cloud-burst-600', icon: {base : 'dark:text-white'} }" 
-                icon="i-heroicons-user" 
-                size="sm" 
-              />
-              <template #account="{ item }">
-                <div class="text-left">
-                  <p>
-                    Signed in as
-                  </p>
-                  <p class="truncate font-medium text-gray-900 dark:text-white">
-                    {{ globalState.user.email }}
-                  </p>
-                </div>
-              </template>
-
-              <template #item="{ item }">
-                <span class="truncate">{{ item.label }}</span>
-                <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 dark:text-gray-500 ms-auto" />
-              </template>
-            </UDropdown>
+            <div class="divide-x">
+              <ULink
+                class="mr-5 font-semibold hover:dark:text-primary"
+                active-class="dark:text-primary font-bold"
+                to="/gallery">
+                Gallery
+              </ULink>
+              <UDropdown 
+                class="pl-5"
+                :popper="{ arrow: true }"
+                :items="items" 
+                :ui="{ width: 'w-[auto]', item: { disabled: 'cursor-text select-text' }}">
+  
+                <UAvatar 
+                  :ui="{ background: 'dark:bg-cloud-burst-950 hover:dark:bg-cloud-burst-600', icon: {base : 'dark:text-white'} }" 
+                  icon="i-heroicons-user" 
+                  size="sm" 
+                />
+                <template #account="{ item }">
+                  <div class="text-left">
+                    <p>
+                      Signed in as
+                    </p>
+                    <p class="truncate font-medium text-gray-900 dark:text-white">
+                      {{ globalState.user.email }}
+                    </p>
+                  </div>
+                </template>
+  
+                <template #item="{ item }">
+                  <span class="truncate">{{ item.label }}</span>
+                  <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 dark:text-gray-500 ms-auto" />
+                </template>
+              </UDropdown>
+            </div>
           </template>
         </template>
       </div>
