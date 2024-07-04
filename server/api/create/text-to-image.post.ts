@@ -101,8 +101,23 @@ export default defineEventHandler( async (event) => {
   }
 
   const data = await createImage(requestBody);
-  return {
-    seed: data.artifacts[0].seed,
-    image: data.artifacts[0].base64,
-  } 
+  const timestamp = Date.now();
+
+  const response = {
+    base64: `data:image/png;base64,${data.artifacts[0].base64}`,
+    name: `image-${timestamp}`,
+    timestamp: timestamp,
+    params: {
+      prompt: requestBody.prompt,
+      negative_prompt: requestBody.negative_prompt,
+      seed: data.artifacts[0].seed,
+      steps: requestBody.steps,
+      cfg_scale: requestBody.cfg_scale,
+      dimensions: "1024x1024",
+      samples: 1,
+      model: "stable-diffusion-xl-1024-v1-0",
+    },
+  }
+
+  return response;
 })
