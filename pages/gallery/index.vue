@@ -31,7 +31,7 @@
         <ULink    
           :to="`/gallery/${image.name}`"
           v-for="image in  globalState.images">
-            <NuxtImg
+            <img
               :key="image.name" 
               :src="image.url" 
               @load="isLoadingImages = false"
