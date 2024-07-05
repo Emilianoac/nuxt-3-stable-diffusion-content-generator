@@ -4,7 +4,7 @@ import type { User } from "firebase/auth";
 const globalState = reactive({
   user: null as User | null,
   loading: true,
-  images: {} as Record<string, ImageData>,
+  images: {} as Record<string, ImageData> | null,
   formImage: {
     prompt: undefined as string | undefined,
     negative_prompt: undefined as string | undefined,

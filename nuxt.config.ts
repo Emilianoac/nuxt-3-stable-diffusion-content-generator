@@ -6,9 +6,7 @@ export default defineNuxtConfig({
       title: "Pixur | AI Image generator", 
     }
   },
-  modules: [
-    "@nuxt/ui",
-  ],
+  modules: ["@nuxt/ui", "@nuxt/image"],
   runtimeConfig: {
     stableDiffusionKey: process.env.STABLE_DIFFUSION_KEY,
     public: {

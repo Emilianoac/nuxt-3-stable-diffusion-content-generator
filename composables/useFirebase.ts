@@ -19,7 +19,12 @@ export default function () {
 
   async function register(email: string, password: string) {
     try {
-      await createUserWithEmailAndPassword($auth, email, password);
+      const user = await createUserWithEmailAndPassword($auth, email, password);
+
+      await set(refRealTimeDB($db, `users/${user.user.uid}`), {
+        uid: user.user.uid,
+      });
+
       return true;
     } catch (error) {
       return null;
@@ -42,7 +47,14 @@ export default function () {
 
         const userRef = refRealTimeDB($db, `users/${globalState.user.uid}/images`);
         onValue(userRef, (snapshot) => {
+
+          if (!snapshot.exists()) {
+            globalState.images = null;
+            return;
+          }
+
           globalState.images = snapshot.val() as Record<string, ImageData>;
+
           // sort images by timestamp
           globalState.images = Object.fromEntries(
             Object.entries(globalState.images).sort((a, b) => b[1].timestamp - a[1].timestamp)
