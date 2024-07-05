@@ -28,13 +28,16 @@
       v-else
       class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
       <template v-if="Object.keys(globalState.images).length">
-        <NuxtImg
-        v-for="image in  globalState.images" 
-        :key="image.name" 
-        :src="image.url" 
-        @load="isLoadingImages = false"
-        class="w-max h-max object-cover rounded-sm hover:opacity-80 cursor-pointer bg-cloud-burst-100"
-        />
+        <ULink    
+          :to="`/gallery/${image.name}`"
+          v-for="image in  globalState.images">
+            <NuxtImg
+              :key="image.name" 
+              :src="image.url" 
+              @load="isLoadingImages = false"
+              class="w-max h-max object-cover rounded-sm hover:opacity-80 cursor-pointer bg-cloud-burst-100"
+            />
+        </ULink>
       </template>
       <template v-if="isLoadingImages && !Object.keys(globalState.images).length">
         <USkeleton
