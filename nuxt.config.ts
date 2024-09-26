@@ -6,7 +6,11 @@ export default defineNuxtConfig({
       title: "Pixur | AI Image generator", 
     }
   },
-  modules: ["@nuxt/ui", "@nuxt/image"],
+  modules: [
+    "@nuxt/ui", 
+    "@nuxt/image",
+    "@pinia/nuxt"
+  ],
   runtimeConfig: {
     stableDiffusionKey: process.env.STABLE_DIFFUSION_KEY,
     public: {
@@ -32,4 +36,7 @@ export default defineNuxtConfig({
       }
     },
   },
+  routeRules: {
+    "/gallery/**": {ssr: false}
+  }
 })
