@@ -1,17 +1,15 @@
 <script lang="ts" setup>
-  import { userSchema, type User } from "@/schemas/userSchema"
-  import type { FormSubmitEvent } from "#ui/types"
+  import { userSchema, type User } from "@/schemas/userSchema";
+  import type { FormSubmitEvent } from "#ui/types";
 
-  const { register } = useFirebase();
-  const {globalState} = useGlobalState();
+  const store = useUserStore();
   const modal = useModal();
   const formRegister = reactive({ email: "", password: ""});
   const error = ref<string | null>(null);
 
   async function handleRegister(event: FormSubmitEvent<User>) {
     try {
-      globalState.loading = true;
-      const res = await register(formRegister.email, formRegister.password);
+      const res = await store.register(formRegister.email, formRegister.password);
 
       if (!res) {
         error.value = "Failed to register";
@@ -23,8 +21,6 @@
 
     } catch (error) {
       console.error(error);
-    } finally {
-      globalState.loading = false;
     }
   };
 </script>

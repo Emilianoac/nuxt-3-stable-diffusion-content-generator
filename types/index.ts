@@ -1,11 +1,3 @@
-export interface GeneratedImage {
-  data: EndpointResponse | null,
-  isPending: boolean
-  error: {
-    status: boolean
-    message: string
-  }
-}
 
 export interface EndpointResponse {
   base64: string,

@@ -4,23 +4,21 @@
   import type { FormSubmitEvent } from "#ui/types"
   import type { EndpointResponse} from "@/types/index";
 
-  const {globalState} = useGlobalState();
-  const modal = useModal()
+  const store = useUserStore();
+  const modal = useModal();
 
-  // Submit data to the server
   async function onSubmit (event: FormSubmitEvent<ImageSchema>) {
-    // If user is not logged in, open login modal
-    if (!globalState.user) {
+    if (!store.user) {
       modal.open(ModalLogin);
       return;
     }
+
     // Get user token to validate request
-    const accessToken = await globalState.user.getIdToken()
+    const accessToken = await store.user.getIdToken()
     
     try {
-      globalState.generatedImage.isPending = true;
-      globalState.generatedImage.error.status = false;
-      const {data, pending, error} = await useFetch("api/create/text-to-image",{
+      store.$patch({isLoading: true});
+      const {data } = await useFetch("api/create/text-to-image",{
         method: "post",
         headers: { 
           "Content-Type": "application/json",
@@ -29,18 +27,12 @@
         body: JSON.stringify(event.data)
       })
       
-      // Handle fetch error
-      if (error.value) {
-        throw new Error(error.value.data.message);
-      }
-      globalState.generatedImage.data = data.value as EndpointResponse;
-      globalState.savingImage.status = false;
-
+      store.$patch({generatedImage: data.value as EndpointResponse, isgeneratedImageSaved: false});
+      store.$patch({isLoading: false});
     } catch (error: any) {
-      globalState.generatedImage.error.status = true;
-      globalState.generatedImage.error.message = error.message;
+      store.$patch({error: { status: true, message: error.message}});
     } finally {
-      globalState.generatedImage.isPending = false;
+      store.$patch({isLoading: false});
     }
   }
 </script>
@@ -50,7 +42,7 @@
 <UForm 
   class="space-y-4 dark:bg-cloud-burst-800 p-4 rounded-md" 
   :schema="imageSchema" 
-  :state="globalState.formImage" 
+  :state="store.newImage" 
   @submit="onSubmit">
   <h1 class="font-bold text-lg">Create a new image</h1>
   <!-- Prompt -->
@@ -78,7 +70,7 @@
       </UPopover>
     </template>
     <template #default>
-      <UTextarea v-model="globalState.formImage.prompt" placeholder="Insert prompt" />
+      <UTextarea v-model="store.newImage.prompt" placeholder="Insert prompt" />
     </template> 
   </UFormGroup>
 
@@ -107,7 +99,7 @@
       </UPopover>
     </template>
     <template #default>
-      <UTextarea v-model="globalState.formImage.negative_prompt" placeholder="Insert negative prompt" />
+      <UTextarea v-model="store.newImage.negative_prompt" placeholder="Insert negative prompt" />
     </template> 
   </UFormGroup>
 
@@ -133,7 +125,7 @@
       </UPopover>
     </template>
     <template #default>
-      <USelect v-model="globalState.formImage.style_preset" :options="styles_preset" />
+      <USelect v-model="store.newImage.style_preset" :options="styles_preset" />
     </template> 
   </UFormGroup>
 
@@ -160,7 +152,7 @@
       </UPopover>
     </template>
     <template #default>
-      <UInput v-model="globalState.formImage.seed" type="number" placeholder="Seed" />
+      <UInput v-model="store.newImage.seed" type="number" placeholder="Seed" />
     </template> 
   </UFormGroup>
 
@@ -169,7 +161,7 @@
     name="steps" 
     :ui="{label: { base: 'flex justify-between items-center w-full mb-1'}}">
     <template #label>
-      <span >Steps: <strong>{{ globalState.formImage.steps.toString()}}</strong> </span>
+      <span >Steps: <strong>{{ store.newImage.steps.toString()}}</strong> </span>
       <UPopover :ui="{wrapper: 'flex'}">
         <UButton 
           size="2xs" 
@@ -186,7 +178,7 @@
       </UPopover>
     </template>
     <template #default>
-      <URange :min="10" :max="20" v-model="globalState.formImage.steps" />
+      <URange :min="10" :max="20" v-model="store.newImage.steps" />
     </template> 
   </UFormGroup>
 
@@ -195,7 +187,7 @@
     name="cfg_scale"
     :ui="{label: { base: 'flex justify-between items-center w-full mb-1'}}">
     <template #label>
-      <span >CFG Scale: <strong>{{ globalState.formImage.cfg_scale.toString()}}</strong> </span>
+      <span >CFG Scale: <strong>{{ store.newImage.cfg_scale.toString()}}</strong> </span>
       <UPopover :ui="{wrapper: 'flex'}">
         <UButton 
           size="2xs" 
@@ -216,7 +208,7 @@
       </UPopover>
     </template>
     <template #default>
-      <URange :min="0" :max="35" v-model="globalState.formImage.cfg_scale" />
+      <URange :min="0" :max="35" v-model="store.newImage.cfg_scale" />
     </template> 
   </UFormGroup>
 

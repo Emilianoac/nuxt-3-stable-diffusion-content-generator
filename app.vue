@@ -1,10 +1,10 @@
 
 <script lang="ts" setup>
-  const {globalState} = useGlobalState();
+  const store = useUserStore();
 </script>
 
 <template>
-  <MyLoading :loading="globalState.loading"/>
+  <MyLoading :loading="store.isLoading"/>
   <MyHeader/>
   <NuxtPage/>
   <UModals/>

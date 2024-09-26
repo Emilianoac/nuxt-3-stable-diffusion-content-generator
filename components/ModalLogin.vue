@@ -1,19 +1,17 @@
 <script lang="ts" setup>
-  import { userSchema, type User } from "@/schemas/userSchema"
-  import type { FormSubmitEvent } from "#ui/types"
+  import { userSchema, type User } from "@/schemas/userSchema";
+  import type { FormSubmitEvent } from "#ui/types";
 
-  const { login } = useFirebase();
-  const {globalState} = useGlobalState();
+  const store = useUserStore();
   const modal = useModal();
   const formLogin = reactive({ email: "", password: ""});
   const error = ref<string | null>(null);
 
   async function handleLogin(event: FormSubmitEvent<User>) {
     try {
-      globalState.loading = true;
-      const res = await login(formLogin.email, formLogin.password);
+      const res = await store.login(formLogin.email, formLogin.password);
 
-      if (!res) {
+      if (!store.user) {
         error.value = "Invalid email or password";
       } else {
         error.value = null;
@@ -22,8 +20,6 @@
 
     } catch (error) {
       console.error(error);
-    } finally {
-      globalState.loading = false;
     }
   }
 </script>
@@ -31,7 +27,7 @@
 <template>
   <UModal
     :ui="{
-      background: 'dark:bg-cloud-burst-800 border border-cloud-burst-600', 
+      background:'dark:bg-cloud-burst-800 border border-cloud-burst-600', 
       padding: 'p-4 sm:p-10',
       overlay: { background: 'backdrop-blur bg-black bg-opacity-50'}
     }"> 

@@ -1,40 +1,26 @@
 <script lang="ts" setup>
-  import {ref as realtimeDB, child, get } from "firebase/database";
   import formatDate from "@/utils/formatDate";
   import type { ImageData} from "@/types/index";
 
   const route = useRoute();
-  const { $db, $storage } = useNuxtApp();
-  const { globalState } = useGlobalState();
+  const store = useUserStore();;
 
   const id = route.params.id;
-  const imageData = ref<ImageData  | null >(null);
-  const isLoading = ref(true);
+  let imageData = ref<ImageData  | null >(null);
 
-  watchEffect(() => {
-    if (globalState.user == null && globalState.loading === false) {
-      navigateTo("/");
-    }
+  watchEffect( async () => {
+    if (store.user == null && store.isLoading === false) navigateTo("/");
 
-    if ( globalState.user ) {
-      const dbRef = realtimeDB($db);
-      get(child(dbRef, `users/${globalState.user?.uid}/images/${id}`)).then((snapshot) => {
-        if (snapshot.exists()) {
-          imageData.value = snapshot.val() as ImageData;
-          document.title = `${imageData.value?.prompt} | Pixur`;
-          isLoading.value = false;
-        } else {
-          isLoading.value = false;
-          console.log("No data available");
-        }
-      });
+    if ( store.user) {
+      imageData.value = await store.getImageById(id as string) ?? null;
+      document.title = `${imageData.value?.prompt} | Pixur`;
     }
   });
 </script>
 
 <template>
   <UContainer class="py-5">
-    <div v-if="imageData && !isLoading">
+    <div v-if="imageData && !store.isLoading">
       <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-10">
         <div>
           <img class="w-full rounded-md" :src="imageData.url" alt="">
@@ -93,7 +79,7 @@
       </div>
     </div>
   </UContainer>
-  <div class="text-center" v-if="!imageData && !isLoading" >
+  <div class="text-center" v-if="!imageData && !store.isLoading" >
     <p class="text-2xl dark:text-cloud-burst-400 font-bold mt-10">
       This image does not exist.
     </p>

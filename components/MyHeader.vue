@@ -2,33 +2,13 @@
   import ModalLogin from "@/components/ModalLogin.vue";
   import ModalRegister from "@/components/ModalRegister.vue";
 
-  const { getCurrentUser, logout} = useFirebase();
-  const {globalState} = useGlobalState();
+  const store = useUserStore();
   const modal = useModal();
 
   const items = [
-    [
-      {
-        label: "",
-        slot: "account",
-        disabled: true
-      }
-    ],  
-    [
-      {
-        label: "Sign out",
-        icon: "i-heroicons-arrow-left-on-rectangle",
-        click () {
-          logout()
-        }
-      }
-    ]
-  ]
-
-  onNuxtReady(() => {
-    getCurrentUser()
-  })
-
+    [{ label: "", slot: "account", disabled: true} ],  
+    [{ label: "Sign out", icon: "i-heroicons-arrow-left-on-rectangle", click() { store.logout(); }}]
+  ];
 </script>
 
 <template>
@@ -39,12 +19,12 @@
       </nuxt-link>
       <div class="flex items-center">
         <USkeleton 
-          v-if="globalState.loading" 
+          v-if="store.isLoading" 
           :ui="{ background: 'dark:bg-cloud-burst-900' }"  
           class="h-[32px] w-[200px]"  
         />
         <template v-else>
-          <template v-if="!globalState.user">
+          <template v-if="!store.user">
             <UButton 
               class="mr-5 font-semibold" 
               color="gray" 
@@ -82,7 +62,7 @@
                       Signed in as
                     </p>
                     <p class="truncate font-medium text-gray-900 dark:text-white">
-                      {{ globalState.user.email }}
+                      {{ store.user.email }}
                     </p>
                   </div>
                 </template>
