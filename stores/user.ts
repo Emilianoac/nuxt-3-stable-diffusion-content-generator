@@ -106,6 +106,7 @@ export const useUserStore = defineStore("user", {
 
         let generatedImage: ImageData = { 
           ...this.generatedImage.params as ImageData, 
+          id: `image-${this.generatedImage.timestamp}`,
           url:  generatedImageData.url as string,
           name: generatedImageData.name as string,
           timestamp: this.generatedImage.timestamp as number

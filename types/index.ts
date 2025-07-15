@@ -19,6 +19,7 @@ export interface EndpointResponse {
 
 export interface ImageData {
   url: string
+  id: string,
   timestamp: number
   name: string
   prompt: string
