@@ -1,7 +1,19 @@
+import useAuth from "@/composables/useAuth";
+
+const publicPaths = ["/"];
+
 export default defineNuxtRouteMiddleware( async (to) => {
-  // skip middleware on server
   if (import.meta.server) return;
+
   const store = useUserStore();
-  await store.getUser();
-  if (!store.user) navigateTo("/");
+  if (store.user) return;
+
+  const { getUser } = useAuth();
+  const user = await getUser();
+
+  store.updateUser(user);
+
+  if (!store.user && !publicPaths.includes(to.path)) {
+    return navigateTo("/");
+  }
 });

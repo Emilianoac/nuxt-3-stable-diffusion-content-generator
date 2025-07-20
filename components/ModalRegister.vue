@@ -1,27 +1,13 @@
 <script lang="ts" setup>
-  import { userSchema, type User } from "@/schemas/userSchema";
-  import type { FormSubmitEvent } from "#ui/types";
+  import { userSchema } from "@/schemas/userSchema";
 
-  const store = useUserStore();
+  const {register, error } = useAuth();
   const modal = useModal();
   const formRegister = reactive({ email: "", password: ""});
-  const error = ref<string | null>(null);
 
-  async function handleRegister(event: FormSubmitEvent<User>) {
-    try {
-      const res = await store.register(formRegister.email, formRegister.password);
-
-      if (!res) {
-        error.value = "Failed to register";
-        return;
-      }  else {
-        error.value = null;
-        modal.close();
-      }
-
-    } catch (error) {
-      console.error(error);
-    }
+  async function handleRegister() {
+    const success = await register(formRegister.email, formRegister.password);
+    if (success) modal.close();
   };
 </script>
 
@@ -74,7 +60,7 @@
             Register
           </UButton>
 
-          <p class="text-center text-red-500 mt-2">{{ error }}</p>
+          <p class="text-center text-red-500 mt-2" v-if="error.status">{{ error.message }}</p>
         </UForm>
       </div>
   </UModal>

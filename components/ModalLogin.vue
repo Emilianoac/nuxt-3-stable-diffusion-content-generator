@@ -1,26 +1,13 @@
 <script lang="ts" setup>
-  import { userSchema, type User } from "@/schemas/userSchema";
-  import type { FormSubmitEvent } from "#ui/types";
+  import { userSchema } from "@/schemas/userSchema";
 
-  const store = useUserStore();
+  const { login, error } = useAuth();
   const modal = useModal();
   const formLogin = reactive({ email: "", password: ""});
-  const error = ref<string | null>(null);
 
-  async function handleLogin(event: FormSubmitEvent<User>) {
-    try {
-      const res = await store.login(formLogin.email, formLogin.password);
-
-      if (!store.user) {
-        error.value = "Invalid email or password";
-      } else {
-        error.value = null;
-        modal.close();
-      }
-
-    } catch (error) {
-      console.error(error);
-    }
+  async function handleLogin() {
+    const success = await login(formLogin.email, formLogin.password);
+    if (success) modal.close();
   }
 </script>
 
@@ -68,7 +55,7 @@
             Login
           </UButton>
 
-          <p class="text-center text-red-500 text-sm" v-if="error">{{ error }}</p>
+          <p class="text-center text-red-500 text-sm" v-if="error.status">{{ error.message }}</p>
         </UForm>
       </div>
   </UModal>
