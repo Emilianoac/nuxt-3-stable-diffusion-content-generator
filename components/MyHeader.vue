@@ -3,11 +3,26 @@
   import ModalRegister from "@/components/ModalRegister.vue";
 
   const store = useUserStore();
+  const { logout, error } = useAuth();
   const modal = useModal();
+  const toast = useToast();
+
+  async function handleLogout() {
+    await logout();
+    if (!error.value.status) {
+      navigateTo("/");
+    } else {
+      toast.add({
+        title: "Logout failed",
+        description: "An error occurred while trying to log out.",
+        color: "red",
+      });
+    }
+  };
 
   const items = [
     [{ label: "", slot: "account", disabled: true} ],  
-    [{ label: "Sign out", icon: "i-heroicons-arrow-left-on-rectangle", click() { store.logout(); }}]
+    [{ label: "Sign out", icon: "i-heroicons-arrow-left-on-rectangle", click() { handleLogout(); }}]
   ];
 </script>
 
