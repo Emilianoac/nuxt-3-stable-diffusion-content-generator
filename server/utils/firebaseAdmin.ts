@@ -8,6 +8,7 @@ interface FirebaseAdminAppParams {
   clientEmail: string;
   storageBucket: string;
   privateKey: string;
+  databaseURL: string;
 }
 
 /**
@@ -37,6 +38,7 @@ export function createFirebaseAdminApp(params: FirebaseAdminAppParams) {
     credential: cert,
     projectId: params.projectId,
     storageBucket: params.storageBucket,
+    databaseURL: params.databaseURL
   });
 }
  
@@ -49,6 +51,7 @@ export async function initAdmin() {
     clientEmail: process.env.FIREBASE_CLIENT_EMAIL as string,
     storageBucket: process.env.NUXT_PUBLIC_FIREBASE_STORAGE_BUCKET as string,
     privateKey: process.env.FIREBASE_PRIVATE_KEY as string,
+    databaseURL: process.env.NUXT_PUBLIC_FIREBASE_DATABASE_URL as string,
   };
  
   return createFirebaseAdminApp(params);
