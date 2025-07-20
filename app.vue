@@ -1,14 +1,17 @@
 
 <script lang="ts" setup>
-  const store = useUserStore();
+  import MyLoading from "@/components/MyLoading.vue";
+
+  const userStore = useUserStore();
+  const imageGenerationStore = useImageGenerationStore();
 </script>
 
 <template>
-  <MyLoading :loading="store.isLoading"/>
-  <MyHeader/>
+<MyHeader/>
   <NuxtPage/>
   <UModals/>
   <UNotifications/>
+  <MyLoading :loading="userStore.isLoading || imageGenerationStore.isLoading"/>
 </template>
 
 <style lang="postcss">
