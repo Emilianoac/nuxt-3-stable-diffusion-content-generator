@@ -1,34 +1,9 @@
 import { z } from "zod";
 
-// List of styles preset available for the model
-export const styles_preset = [
-  "none",
-  "anime",
-  "3d-model",
-  "analog-film",
-  "cinematic",
-  "comic-book",
-  "digital-art",
-  "enhance",
-  "fantasy-art",
-  "isometric",
-  "line-art",
-  "low-poly",
-  "modeling-compound",
-  "neon-punk",
-  "origami",
-  "photographic",
-  "pixel-art",
-  "tile-texture"
-]
-
 // Create zod schema
 export const imageSchema = z.object({
   prompt: z.string().min(1, "Prompt is required"),
   negative_prompt: z.string().optional(),
-  style_preset: z.string().refine((val) => styles_preset.includes(val), {
-    message: "Invalid style preset"
-  }),
   seed: z
     .number()
     .int("Seed must be integer number")
