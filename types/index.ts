@@ -23,8 +23,7 @@ export interface ImageData {
   timestamp: number
   name: string
   prompt: string
-  negative_prompt: string
-  style_preset: string
+  negative_prompt?: string
   steps: number
   cfg_scale: number
   samples: number
