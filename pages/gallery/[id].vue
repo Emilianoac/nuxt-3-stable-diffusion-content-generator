@@ -4,7 +4,7 @@
   const route = useRoute();
   const id = route.params.id;
 
-  const { getSingleImage, image, isLoading } = useUserImages();
+  const { getSingleImage, image, isLoading, error } = useUserImages();
 
   onNuxtReady(async () => {
     if (id) {
@@ -15,7 +15,13 @@
 
 <template>
   <UContainer class="py-5">
-    <div v-if="image && isLoading">
+    
+    <div v-if="isLoading" class="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-10 ">
+      <USkeleton class="w-full md:h-[80vh] h-[400px]" />
+      <USkeleton class="w-full md:h-[80vh] h-[600px]" />
+    </div>
+
+    <div v-if="image">
       <div class="grid grid-cols-1 md:grid-cols-[1.5fr_1fr] gap-10">
         <div>
           <img class="w-full rounded-md" :src="image.url" alt="">
@@ -74,9 +80,10 @@
       </div>
     </div>
   </UContainer>
-  <div class="text-center" v-if="!image && !isLoading" >
+  
+  <div class="text-center" v-if="error.status">
     <p class="text-2xl dark:text-cloud-burst-400 font-bold mt-10">
-      This image does not exist.
+      {{error.message || "An error occurred while fetching the image."}}
     </p>
     <UButton to="/" class=" mt-5 text-center">
       Go back to home
