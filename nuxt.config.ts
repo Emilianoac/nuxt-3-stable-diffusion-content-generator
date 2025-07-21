@@ -9,7 +9,8 @@ export default defineNuxtConfig({
   modules: [
     "@nuxt/ui", 
     "@nuxt/image",
-    "@pinia/nuxt"
+    "@pinia/nuxt",
+    "@nuxt/test-utils",
   ],
   runtimeConfig: {
     stableDiffusionKey: process.env.STABLE_DIFFUSION_KEY,
