@@ -10,6 +10,7 @@ export default function useUserImages() {
   const isEndReached = ref(false);
   const hasLoadedOnce = ref(false);
   const isLoading = ref(false);
+  const error = ref({status: false, message: ""});
 
   async function getPaginatedImages() {
     const userId = useStore.user?.id;
@@ -30,21 +31,24 @@ export default function useUserImages() {
   }
 
   async function getSingleImage(imageId: string) {
-    const userId = useStore.user?.id;
-    if (!userId) return null;
-
+    error.value = { status: false, message: "" };
     isLoading.value = true;
-
-    const data = await $userImageService.getSingleImage(userId, imageId);
-    if (data) {
+    
+    try {
+      const userId = useStore.user?.id;
+      if (!userId) throw new Error("User not authenticated");
+      
+      const data = await $userImageService.getSingleImage(userId, imageId);
+      if (!data) throw new Error("Image not found");
       image.value = data;
-      return data;
-    } else {
-      console.error("Image not found");
-      return null;
+    } catch (err) {
+      error.value = {
+        status: true,
+        message: err instanceof Error ? err.message : "An error occurred while fetching the image"
+      };
+    } finally {
+      isLoading.value = false;
     }
-
-    isLoading.value = false;
   }
 
   return {
@@ -54,6 +58,7 @@ export default function useUserImages() {
     image,
     isLoading,
     isEndReached,
-    hasLoadedOnce
+    hasLoadedOnce,
+    error
   };
 };
