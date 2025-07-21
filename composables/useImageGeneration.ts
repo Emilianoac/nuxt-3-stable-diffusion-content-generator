@@ -7,6 +7,7 @@ export function useImageGeneration() {
   const { $storageService, $authService, $dbService } = useNuxtApp();
   const imageService = createImageGenerationService();
   const store = useImageGenerationStore();
+  const userStore = useUserStore();
   const error = ref({ status: false, message: ""});
 
   async function generateImage(form: NewImageParamsUser) {
@@ -39,17 +40,17 @@ export function useImageGeneration() {
       const base64 = store.generatedImage.base64;
       if (!base64) throw new Error("No image generated to process.");
 
-      const idToken = await $authService.getidToken();
-      if (!idToken) throw new Error("User is not authenticated.");
+      const userId = userStore.user?.id;
+      if (!userId) throw new Error("User is not authenticated.");
       const timestamp = Date.now();
       const id = `image-${timestamp}`;
 
       const compressedFile = await imageService.processBase64ToCompressedFile(base64, id);
-      const url = await $storageService.addItem(compressedFile, idToken);
+      const url = await $storageService.addItem(compressedFile, userId);
       if (!url) throw new Error("Failed to upload image to storage.");
 
       const metadata = imageService.createMetadata(compressedFile, id, timestamp, url, store.generatedImage.data)
-      await $dbService.addUserImage(metadata, idToken);
+      await $dbService.addUserImage(metadata, userId);
     } catch (err) {
       error.value = { 
         status: true, 
