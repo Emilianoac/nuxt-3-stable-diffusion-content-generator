@@ -42,10 +42,12 @@ export function useImageGeneration() {
 
       const userId = userStore.user?.id;
       if (!userId) throw new Error("User is not authenticated.");
+
       const timestamp = Date.now();
       const id = `image-${timestamp}`;
 
       const compressedFile = await imageService.processBase64ToCompressedFile(base64, id);
+      
       const url = await $storageService.addItem(compressedFile, userId);
       if (!url) throw new Error("Failed to upload image to storage.");
 
