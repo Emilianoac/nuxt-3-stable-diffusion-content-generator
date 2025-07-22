@@ -30,49 +30,49 @@
           <p class="mb-3 dark:text-cloud-burst-300 text-sm">{{ formatDate(image.timestamp) }}</p>
 
           <div class="mb-5">
-            <p className="dark:text-white font-bold mb-1">Prompt</p>
-            <p class="dark:text-white border dark:bg-cloud-burst-500 dark:border-cloud-burst-800 p-3 rounded-md">
+            <p className="font-bold mb-1">Prompt</p>
+            <p class="bg-slate-200 dark:bg-cloud-burst-700 p-3 rounded-md">
               {{ image.prompt }}
             </p>
           </div>
           <div class="mb-5" v-if="image.negative_prompt">
-            <p className="dark:text-white font-bold mb-1">Negative Promt</p>
-            <p class="dark:text-white border dark:bg-cloud-burst-500 dark:border-cloud-burst-800 p-3 rounded-md">
+            <p className="font-bold mb-1">Negative Promt</p>
+            <p class="bg-slate-200 dark:bg-cloud-burst-700 p-3 rounded-md">
               {{ image.negative_prompt }}
             </p>
           </div>
           <!--SEED-->
           <div class="mb-5">
-            <p className="dark:text-white font-bold mb-1">Seed</p>
-            <p class="dark:text-white border dark:bg-cloud-burst-500 dark:border-cloud-burst-800 p-3 rounded-md">
+            <p className="font-bold mb-1">Seed</p>
+            <p class="bg-slate-200 dark:bg-cloud-burst-700 p-3 rounded-md">
               {{ image.seed }}
             </p>
           </div>
           <!--STEPS-->
           <div class="mb-5">
-            <p className="dark:text-white font-bold mb-1">Steps</p>
-            <p class="dark:text-white border dark:bg-cloud-burst-500 dark:border-cloud-burst-800 p-3 rounded-md">
+            <p className="font-bold mb-1">Steps</p>
+            <p class="bg-slate-200 dark:bg-cloud-burst-700 p-3 rounded-md">
               {{ image.steps }}
             </p>
           </div>    
           <!--DIMENSIONS-->
           <div class="mb-5">
-            <p className="dark:text-white font-bold mb-1">Dimensions</p>
-            <p class="dark:text-white border dark:bg-cloud-burst-500 dark:border-cloud-burst-800 p-3 rounded-md">
+            <p className="font-bold mb-1">Dimensions</p>
+            <p class="bg-slate-200 dark:bg-cloud-burst-700 p-3 rounded-md">
               {{ image.dimensions }}
             </p>
           </div>
           <!--cfg scale-->
           <div class="mb-5">
-            <p className="dark:text-white font-bold mb-1">CFG Scale</p>
-            <p class="dark:text-white border dark:bg-cloud-burst-500 dark:border-cloud-burst-800 p-3 rounded-md">
+            <p className="font-bold mb-1">CFG Scale</p>
+            <p class="bg-slate-200 dark:bg-cloud-burst-700 p-3 rounded-md">
               {{ image.cfg_scale }}
             </p>
           </div>
           <!-- MODEL -->
           <div class="mb-5">
-            <p className="dark:text-white font-bold mb-1">Model</p>
-            <p class="dark:text-white border dark:bg-cloud-burst-500 dark:border-cloud-burst-800 p-3 rounded-md">
+            <p className="font-bold mb-1">Model</p>
+            <p class="bg-slate-200 dark:bg-cloud-burst-700 p-3 rounded-md">
               {{ image.model }}
             </p>
           </div>
@@ -82,7 +82,7 @@
   </UContainer>
   
   <div class="text-center" v-if="error.status">
-    <p class="text-2xl dark:text-cloud-burst-400 font-bold mt-10">
+    <p class="text-2xl text-slate-500 dark:text-cloud-burst-400 font-bold mt-10">
       {{error.message || "An error occurred while fetching the image."}}
     </p>
     <UButton to="/" class=" mt-5 text-center">

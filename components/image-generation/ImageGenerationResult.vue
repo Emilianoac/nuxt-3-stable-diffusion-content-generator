@@ -26,7 +26,7 @@
 
 <template>
   <!-- Placeholder Image -->
-  <Icon v-if="!imageGenerationStore.generatedImage.isGenerated" class=" text-[10em] lg:text-[20em] text-cloud-burst-500" name="material-symbols:image-outline"/>
+  <Icon v-if="!imageGenerationStore.generatedImage.isGenerated" class=" text-[10em] lg:text-[20em] text-slate-300 dark:text-cloud-burst-500" name="material-symbols:image-outline"/>
   
   <div v-else>
     <!-- Actions -->
@@ -59,9 +59,7 @@
     <UCard>
       <template #header>
         <div class="flex items-center justify-between">
-          <h3 class="text-lg font-bold leading-6 text-gray-900 dark:text-white">
-            Image Details
-          </h3>
+          <h3 class="text-lg font-bold leading-6 text-gray-900 dark:text-white"> Image Details</h3>
           <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="isImageDetailsOpen = false" />
         </div>
       </template>

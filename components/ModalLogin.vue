@@ -14,13 +14,13 @@
 <template>
   <UModal
     :ui="{
-      background:'dark:bg-cloud-burst-800 border border-cloud-burst-600', 
+      background:'dark:bg-cloud-burst-700 border border-slate-100 dark:border-cloud-burst-600', 
       padding: 'p-4 sm:p-10',
       overlay: { background: 'backdrop-blur bg-black bg-opacity-50'}
     }"> 
       <div class="p-10">
         <div class="text-center mb-5">
-          <img class="mx-auto max-w-[100px]" src="/logo.svg" alt="Site logo"/>
+          <MyLogo class="mx-auto mb-2 w-[100px]" />
           <p class="text-sm mt-2">AI Image generator</p>
         </div>
 

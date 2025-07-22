@@ -15,9 +15,10 @@
 </template>
 
 <style lang="postcss">
-  html {
+  body {
     height: 100vh;
     background-attachment: fixed;
-    @apply bg-gradient-to-bl bg-no-repeat from-cloud-burst-900  to-cloud-burst-500;
+    @apply bg-gradient-to-bl bg-no-repeat;
+    @apply bg-slate-100 dark:from-cloud-burst-900 dark:to-cloud-burst-500;
   }
 </style>

@@ -27,10 +27,10 @@
 </script>
 
 <template>
-  <header class="p-3 bg-cloud-burst-800 border-b border-b-cloud-burst-600">
+  <header class="bg-white dark:bg-cloud-burst-800 border-b border-b-slate-200 dark:border-b-cloud-burst-600 p-3">
     <UContainer class="flex justify-between items-center">
       <nuxt-link to="/">
-        <img class="max-w-[80px] md:max-w-[100px]" src="/logo.svg" alt="Site logo"/>
+        <MyLogo class="h-5 w-auto" />
       </nuxt-link>
       <div class="flex items-center">
         <USkeleton 
@@ -41,8 +41,8 @@
         <template v-else>
           <template v-if="!store.user">
             <UButton 
-              class="mr-5 font-semibold" 
-              color="gray" 
+              class="mr-3 font-semibold" 
+              color="black" 
               @click="modal.open(ModalLogin)">
               Login
             </UButton>
@@ -53,32 +53,38 @@
             </UButton>
           </template>
           <template v-else>
-            <div class="divide-x">
+            <div class="flex items-center">
               <ULink
                 class="mr-5 font-semibold hover:dark:text-primary"
-                active-class="dark:text-primary font-bold"
+                active-class="text-primary font-bold"
                 to="/gallery">
-                Gallery
+                My Gallery
               </ULink>
               <UDropdown 
-                class="pl-5"
+                class="pl-1"
                 :popper="{ arrow: true }"
                 :items="items" 
-                :ui="{ width: 'w-[auto]', item: { disabled: 'cursor-text select-text' }}">
+                :ui="{ 
+                  width: 'w-[auto]', 
+                  item: { 
+                    disabled: 'cursor-text select-text' ,
+                    base: 'bg-white dark:bg-cloud-burst-800 text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-cloud-burst-700 focus:bg-slate-100 dark:focus:bg-cloud-burst-700',
+                  },
+                }">
   
                 <UAvatar 
-                  :ui="{ background: 'dark:bg-cloud-burst-950 hover:dark:bg-cloud-burst-600', icon: {base : 'dark:text-white'} }" 
-                  icon="i-heroicons-user" 
+                  :ui="{ 
+                    background: 'bg-slate-100 hover:bg-slate-200 dark:bg-cloud-burst-700 hover:dark:bg-cloud-burst-500 border border-slate-200 dark:border-cloud-burst-500', 
+                    icon: { base : 'dark:text-white'} 
+                  }" 
+                  icon="material-symbols:person-rounded" 
                   size="sm" 
                 />
+
                 <template #account="{ item }">
                   <div class="text-left">
-                    <p>
-                      Signed in as
-                    </p>
-                    <p class="truncate font-medium text-gray-900 dark:text-white">
-                      {{ store.user.email }}
-                    </p>
+                    <p>Signed in as</p>
+                    <p class="truncate font-medium ">{{ store.user.email }}</p>
                   </div>
                 </template>
   
@@ -89,6 +95,7 @@
               </UDropdown>
             </div>
           </template>
+          <MyThemeToggle class="ml-3"/>
         </template>
       </div>
     </UContainer>

@@ -17,7 +17,7 @@
 <template>
   <!-- Image Generation Form -->
   <UForm 
-    class="space-y-4 dark:bg-cloud-burst-800 p-4 rounded-md" 
+    class="bg-white dark:bg-cloud-burst-800 space-y-4 p-4 rounded-md" 
     :schema="imageSchema" 
     :state="imageGenerationStore.newImageParams" 
     @submit="onSubmit">
