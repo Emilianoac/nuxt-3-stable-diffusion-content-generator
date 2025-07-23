@@ -2,7 +2,7 @@ import { z } from "zod";
 
 // Create zod schema
 export const imageSchema = z.object({
-  prompt: z.string().min(1, "Prompt is required"),
+  prompt: z.string().trim().min(1, "Prompt is required"),
   negative_prompt: z.string().optional(),
   seed: z
     .number()
