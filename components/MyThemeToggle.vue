@@ -6,16 +6,20 @@
 </script>
 
 <template>
-  <button 
-    @click="toggle()" 
-    aria-label="Switch theme" 
-    class="p-2 w-8 h-8 rounded-full flex justify-center items-center bg-slate-100 hover:bg-slate-200 dark:bg-cloud-burst-700 hover:dark:bg-cloud-burst-500 border border-slate-200 dark:border-cloud-burst-500">
-      <UTooltip
-        :text="isDark ? 'Switch to Light Mode' : 'Switch to Dark Mode'">
-        <Icon name="material-symbols:dark-mode" v-if="isDark" />
-        <Icon name="material-symbols:light-mode" v-else />
-      </UTooltip>
-  </button>
+  <div class="flex flex-col justify-start"> 
+    <span class="text-xs block mb-2 text-start">Select theme</span>
+    <div class="flex items-center gap-2">
+      <UToggle
+        v-model="isDark"
+        on-icon="heroicons:moon"
+        off-icon="heroicons:sun"
+      />
+      <p class="text-xs text-gray-500 dark:text-slate-200 ">
+        {{ isDark ? "Dark Mode" : "Light Mode" }}
+      </p>
+
+    </div>
+  </div>
 </template>
 
 <style lang="postcss" scoped></style>
