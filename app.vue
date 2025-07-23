@@ -1,9 +1,12 @@
 
 <script lang="ts" setup>
+  import { useDark } from "@vueuse/core";
   import MyLoading from "@/components/MyLoading.vue";
 
   const userStore = useUserStore();
   const imageGenerationStore = useImageGenerationStore();
+
+  useDark();
 </script>
 
 <template>
