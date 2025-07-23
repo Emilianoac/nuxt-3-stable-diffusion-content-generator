@@ -21,8 +21,9 @@
   };
 
   const items = [
-    [{ label: "", slot: "account", disabled: true} ],  
-    [{ label: "Sign out", icon: "i-heroicons-arrow-left-on-rectangle", click() { handleLogout(); }}]
+    [{ label: "", slot: "account"} ],  
+    [{ label: "", slot: "theme-toggle"}],
+    [{ label: "Sign out", icon: "i-heroicons-arrow-left-on-rectangle", click() { handleLogout(); }}],
   ];
 </script>
 
@@ -55,7 +56,7 @@
           <template v-else>
             <div class="flex items-center">
               <ULink
-                class="mr-5 font-semibold hover:dark:text-primary"
+                class="mr-5 font-semibold dark:hover:text-primary"
                 active-class="text-primary font-bold"
                 to="/gallery">
                 My Gallery
@@ -83,19 +84,22 @@
 
                 <template #account="{ item }">
                   <div class="text-left">
-                    <p>Signed in as</p>
+                    <p class="font-bold text-sm">Signed in as</p>
                     <p class="truncate font-medium ">{{ store.user.email }}</p>
                   </div>
                 </template>
-  
+
+                <template #theme-toggle="{ item }">
+                  <MyThemeToggle />
+                </template>
+
                 <template #item="{ item }">
                   <span class="truncate">{{ item.label }}</span>
-                  <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 dark:text-gray-500 ms-auto" />
+                  <UIcon :name="item.icon" class="flex-shrink-0 h-4 w-4 text-gray-400 dark:text-gray-300 ms-auto" />
                 </template>
               </UDropdown>
             </div>
           </template>
-          <MyThemeToggle class="ml-3"/>
         </template>
       </div>
     </UContainer>
