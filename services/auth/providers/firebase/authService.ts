@@ -6,19 +6,40 @@ import {
 } from "firebase/auth";
 import type { AuthService } from "@/services/auth/authService";
 import type { Auth } from "firebase/auth";
+import { AuthProvider, mapAuthError, getAuthErrorMessage } from "@/services/auth/error/error";
 
 let userPromise: Promise<{ id: string; email: string; name?: string } | null> | null = null;
 
 export function createFirebaseAuthService(auth: Auth): AuthService {
   return {
     async login(email, password) {
-      return signInWithEmailAndPassword(auth, email, password);
+      try {
+        await signInWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        const errorCode = mapAuthError(err, AuthProvider.Firebase);
+        const message = getAuthErrorMessage(errorCode);
+        throw new Error(message);
+      }
     },
     async register(email, password) {
-      return createUserWithEmailAndPassword(auth, email, password);
+      try {
+        await createUserWithEmailAndPassword(auth, email, password);
+      } catch (err) {
+        console.error("Registration error:", err);
+        const errorCode = mapAuthError(err, AuthProvider.Firebase);
+        const message = getAuthErrorMessage(errorCode);
+        console.log(message)
+        throw new Error(message);
+      }
     },
     async logout() {
-      return signOut(auth);
+      try {
+        await signOut(auth);
+      } catch (err) {
+        const errorCode = mapAuthError(err, AuthProvider.Firebase);
+        const message = getAuthErrorMessage(errorCode);
+        throw new Error(message);
+      }
     },
     async getidToken() {
       const user = auth.currentUser;
