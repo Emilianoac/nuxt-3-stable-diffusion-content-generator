@@ -1,6 +1,3 @@
-
-import { FirebaseError } from "firebase/app";
-
 export default function useAuth() {
   const { $authService, $dbService } = useNuxtApp();
   const userStore = useUserStore();
@@ -11,15 +8,12 @@ export default function useAuth() {
     userStore.updateLoading(true);
     error.value = { status: false, message: "" };
     try {
-
       await $authService.login(email, password);
       return true;
     }  catch (err) {
-      error.value.status = true;
-      if (err instanceof FirebaseError) {
-        if (err.code === "auth/invalid-credential") {
-          error.value.message = "Invalid email or password.";
-        }
+      error.value = {
+        status: true,
+        message: err instanceof Error ? err.message : "Login failed"
       }
       return false;
     } finally {
@@ -38,7 +32,10 @@ export default function useAuth() {
       });
       return user;
     } catch (err) {
-      error.value = { status: true, message: error instanceof Error ? error.message : "Registration failed" };
+      error.value = { 
+        status: true, 
+        message: err instanceof Error ? err.message : "Registration failed" 
+      };
       return null;
     } finally {
       userStore.updateLoading(false);
@@ -51,8 +48,10 @@ export default function useAuth() {
       await $authService.logout();
       return true;
     } catch (err) {
-      error.value.status = true;
-      error.value.message = err instanceof Error ? err.message : "Logout failed";
+      error.value = {
+        status: true,
+        message: err instanceof Error ? err.message : "Logout failed"
+      }
       return false;
     } finally {
       userStore.updateLoading(false);
