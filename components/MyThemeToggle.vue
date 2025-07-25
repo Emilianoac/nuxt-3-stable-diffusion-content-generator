@@ -1,8 +1,13 @@
 <script lang="ts" setup>
-  import { useDark, useToggle } from "@vueuse/core";
-
-  const isDark = useDark();
-  const toggle = useToggle(isDark);
+  const colorMode = useColorMode();
+  const isDark = computed({
+    get() {
+      return colorMode.value === "dark";
+    },
+    set(value: boolean) {
+      colorMode.preference = colorMode.value === 'dark' ? 'light' : 'dark';
+    }
+  })
 </script>
 
 <template>
