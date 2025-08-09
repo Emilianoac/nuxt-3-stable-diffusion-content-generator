@@ -23,12 +23,20 @@ export function createFirebaseAuthService(auth: Auth): AuthService {
     },
     async register(email, password) {
       try {
-        await createUserWithEmailAndPassword(auth, email, password);
+        const { user } = await createUserWithEmailAndPassword(auth, email, password);
+
+        if (!user.uid || !user.email) {
+          throw new Error("User registration failed");
+        }
+        
+        return {
+          id: user.uid,
+          email: user.email,
+          name: user.displayName ?? undefined
+        }
       } catch (err) {
-        console.error("Registration error:", err);
         const errorCode = mapAuthError(err, AuthProvider.Firebase);
         const message = getAuthErrorMessage(errorCode);
-        console.log(message)
         throw new Error(message);
       }
     },

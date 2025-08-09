@@ -26,9 +26,9 @@ export default function useAuth() {
     error.value = { status: false, message: "" };
     try {
       const user = await $authService.register(email, password);
-      await $dbService.saveUserProfile(user.user.uid, {
-        email: user.user.email,
-        uid: user.user.uid
+      await $dbService.saveUserProfile(user.id, {
+        email: user.email,
+        id: user.id,
       });
       return user;
     } catch (err) {
