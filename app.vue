@@ -1,8 +1,6 @@
 
 <script lang="ts" setup>
   import MyLoading from "@/components/MyLoading.vue";
-
-  const userStore = useUserStore();
   const imageGenerationStore = useImageGenerationStore();
 </script>
 
@@ -11,7 +9,7 @@
   <NuxtPage/>
   <UModals/>
   <UNotifications/>
-  <MyLoading :loading="userStore.isLoading || imageGenerationStore.isLoading"/>
+  <MyLoading :loading="imageGenerationStore.isLoading"/>
 </template>
 
 <style lang="postcss">
