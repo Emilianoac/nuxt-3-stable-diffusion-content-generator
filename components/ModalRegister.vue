@@ -2,6 +2,7 @@
   import { userSchema } from "@/schemas/userSchema";
 
   const {register, error } = useAuth();
+  const userStore = useUserStore();
   const modal = useModal();
   const formRegister = reactive({ email: "", password: ""});
 
@@ -18,7 +19,12 @@
       padding: 'p-4 sm:p-10',
       overlay: { background: 'backdrop-blur bg-black bg-opacity-50'}
     }"> 
-      <div class="p-10">
+
+       <div class="flex items-center justify-end p-4">
+        <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1 rounded-full" @click="modal.close()" />
+      </div>
+
+      <div class="p-8 pt-0">
         <div class="text-center mb-5">
           <MyLogo class="mx-auto mb-2 w-[100px]" />
           <p class="text-sm mt-2">AI Image generator</p>
@@ -30,7 +36,7 @@
           @submit="handleRegister"
           :schema="userSchema"
           >
-          <h1 class="text-center font-bold text-xl mb-5">Register</h1>
+          <h1 class="text-center font-bold text-xl mb-5"> Create a new account</h1>
           <!-- Email -->
           <UFormGroup 
             name="email"
@@ -39,7 +45,7 @@
             class="mb-5">
             <UInput 
               v-model="formRegister.email" 
-              placeholder="Email" 
+              placeholder="Your email"
             />
           </UFormGroup>
     
@@ -51,13 +57,17 @@
             class="mb-5">
             <UInput 
               v-model="formRegister.password" 
-              placeholder="Password" 
+              placeholder="Your password"
               type="password"
             />
           </UFormGroup>
     
-          <UButton class="mt-4 w-full block font-semibold" type="submit">
-            Register
+          <UButton 
+            class="mt-4 w-full block font-semibold py-3" 
+            :loading="userStore.isLoading"
+            loading-icon="gg:spinner-two"
+            type="submit">
+            {{ userStore.isLoading ? "Registering..." : "Register" }}
           </UButton>
 
           <p class="text-center text-red-500 mt-2" v-if="error.status">{{ error.message }}</p>
