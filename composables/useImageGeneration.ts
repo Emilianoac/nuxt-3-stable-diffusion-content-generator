@@ -12,6 +12,7 @@ export function useImageGeneration() {
 
   const newImageParams = computed(() => imageStore.imageGeneration.newImageParams);
   const generatedImage = computed(() => imageStore.imageGeneration.generatedImage);
+  const currentImage = computed(() => imageStore.currentImage.data);
   const error = ref({ status: false, message: ""});
   
   async function generateImage(form: NewImageParamsUser) {
@@ -26,6 +27,7 @@ export function useImageGeneration() {
 
       const compressedBase64 = await compressBase64(data.base64, 0.7);
       imageStore.updateGeneratedImage(compressedBase64, data.seed, form);
+      imageStore.updateCurrentImage(imageStore.imageGeneration.generatedImage);
     } catch (err) {
       error.value = {
         status: true,
@@ -70,7 +72,7 @@ export function useImageGeneration() {
     generateImage,
     processImageAndSave,
     newImageParams,
-    generatedImage,
+    currentImage,
     error,
   };
 } 

@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   const toast = useToast();
-  const { generatedImage, error, processImageAndSave } = useImageGeneration();
+  const {currentImage, error, processImageAndSave } = useImageGeneration();
   const isImageDetailsOpen = ref(false);
 
   async function handleSave() {
@@ -24,20 +24,20 @@
 
 <template>
   <!-- Placeholder Image -->
-  <Icon v-if="!generatedImage.isGenerated" class=" text-[10em] lg:text-[20em] text-slate-300 dark:text-cloud-burst-500" name="material-symbols:image-outline"/>
+  <Icon v-if="!currentImage" class=" text-[10em] lg:text-[20em] text-slate-300 dark:text-cloud-burst-500" name="material-symbols:image-outline"/>
   
   <div v-else>
     <!-- Actions -->
     <div class="flex items-center justify-end top-0 right-0 py-2 w-full">
-      <UTooltip :text="!generatedImage.isSaved ? 'Save image' : 'Image is already saved'">
-        <UButton size="xs" :disabled="generatedImage.isSaved" color="primary" @click="handleSave"
+      <UTooltip :text="!currentImage.isSaved ? 'Save image' : 'Image is already saved'">
+        <UButton size="xs" :disabled="currentImage.isSaved" color="primary" @click="handleSave"
           class="me-2 font-bold disabled:opacity-50">
           <Icon name="material-symbols:save" />
         </UButton>
       </UTooltip>
       <UTooltip text="Download Image">
-        <UButton size="xs" color="black" class="me-2 font-bold" :to="generatedImage.base64"
-          download="generatedImage.png">
+        <UButton size="xs" color="black" class="me-2 font-bold" :to="currentImage.base64"
+          download="currentImage.png">
           <Icon name="material-symbols:download-2" />
         </UButton>
       </UTooltip>
@@ -49,7 +49,7 @@
     </div>
 
     <!-- Generated Image -->
-    <img class="rounded-md lg:h-[80vh]" :src="generatedImage.base64" />
+    <img class="rounded-md lg:h-[80vh]" :src="currentImage.base64" />
   </div>
 
   <!-- Generated image details -->
@@ -61,8 +61,8 @@
           <UButton color="gray" variant="ghost" icon="i-heroicons-x-mark-20-solid" class="-my-1" @click="isImageDetailsOpen = false" />
         </div>
       </template>
-      <ul class="max-h-[400px] overflow-auto">
-        <li v-for="(value, key, index) in generatedImage.data" :key="index">
+      <ul class="max-h-[400px] overflow-auto" v-if="currentImage">
+        <li v-for="(value, key, index) in currentImage.data" :key="index">
           <template v-if="value">
             <p class="font-bold ">{{ key.split("_").join(" ") }}</p>
             <p class="opacity-70">{{ value }}</p>
