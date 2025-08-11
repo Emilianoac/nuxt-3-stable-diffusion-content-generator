@@ -1,6 +1,7 @@
 
 import { useImageGenerationStore } from "@/stores/imageGeneration";
 import { createImageGenerationService } from "@/services/image-generation/createImageGenerationService";
+import { compressBase64 } from "@/utils/compressBase64"; 
 import type { NewImageParamsUser } from "@/types/image";
 
 export function useImageGeneration() {
@@ -21,7 +22,8 @@ export function useImageGeneration() {
       const data = await imageService.generateImage(form, idToken);
       if (!data) throw new Error("Image generation failed or returned no data");
 
-      store.updateGeneratedImage(data.base64, data.seed, form);
+      const compressedBase64 = await compressBase64(data.base64, 0.7);
+      store.updateGeneratedImage(compressedBase64, data.seed, form);
     } catch (err) {
       error.value = {
         status: true,
