@@ -1,10 +1,10 @@
-import "../mocks/services/mockImageGenerationService";
-import "../mocks/nuxt/mockNuxtApp";
-import { mockDbService } from "../mocks/nuxt/mockNuxtApp";
+import "@/__mocks__/services/mockImageGenerationService";
+import "@/__mocks__/nuxt/mockNuxtApp";
+import { mockDbService } from "@/__mocks__/nuxt/mockNuxtApp";
 
 import { describe, it, expect, beforeEach } from "vitest";
 import { useImageGeneration } from "@/composables/useImageGeneration";
-import { initStores, type PiniaStores } from "@/__tests__/pinia/piniaStores";
+import { initStores, type PiniaStores } from "@/__mocks__/pinia/piniaStores";
 
 describe("useImageGeneration", () => {
   let userStore: PiniaStores["userStore"];
