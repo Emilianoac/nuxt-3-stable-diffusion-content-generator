@@ -1,6 +1,7 @@
 <script lang="ts" setup>
   const toast = useToast();
-  const {currentImage, error, processImageAndSave } = useImageGeneration();
+  const { error, processImageAndSave } = useImageGeneration();
+  const {currentImage} = useCurrentImage();
   const isImageDetailsOpen = ref(false);
 
   async function handleSave() {
