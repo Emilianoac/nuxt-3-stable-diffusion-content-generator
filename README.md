@@ -22,4 +22,4 @@ A web application that allows users to generate images from text prompts using t
 ![gallery](https://res.cloudinary.com/du6pa3pa5/image/upload/v1754918427/gallery_funq0x.webp)
 
 #### Image details
-![image details](https://res.cloudinary.com/du6pa3pa5/image/upload/v1754918427/gallery_funq0x.webp)
+![image details](https://res.cloudinary.com/du6pa3pa5/image/upload/v1754918437/image-details_pvpn2m.webp)
