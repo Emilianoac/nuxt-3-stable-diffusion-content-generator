@@ -7,8 +7,9 @@
     <div class="grid lg:grid-cols-3 gap-5">
       <div class="order-1 lg:order-0">
         <ImageGenerationForm/>
+        <ImageGenerationHistory class="mt-5"/>
       </div>
-      <div class="lg:col-span-2 flex justify-center items-center order-0 lg:order-1">
+      <div class="lg:col-span-2 flex justify-center order-0 lg:order-1">
         <ImageGenerationResult/>
       </div>
     </div>
