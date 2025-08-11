@@ -40,6 +40,21 @@ function createImageHistoryService(): ImageHistoryService {
       }
     },
 
+    replaceImageInHistory: (imageData) => {
+      try {
+        const history = getHistory();
+        const index = history.findIndex(img => img.localStorageId === imageData.localStorageId);
+        if (index !== -1) {
+          history[index] = imageData;
+          saveHistory(history);
+        } else {
+          console.warn("Image to replace not found in history.");
+        }
+      } catch (error) {
+        console.error("Error replacing image in history:", error);
+      }
+    },
+
     clearHistory: () => {
       try {
         localStorageService.clearItem(storageKey);
