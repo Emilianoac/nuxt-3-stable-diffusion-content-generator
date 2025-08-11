@@ -47,13 +47,16 @@ export const useImageGenerationStore = defineStore("imageGeneration",  {
   }),
   actions: {
     updateGeneratedImage(base64: string, seed: number, form: NewImageParamsUser) {
-      this.generatedImage.isGenerated = true;
-      this.generatedImage.base64 = base64;
-      this.generatedImage.data = {
-        ...baseParams,
-        ...form,
-        seed,
-      };
+      this.generatedImage = {
+        isSaved: false,
+        isGenerated: true,
+        base64,
+        data: {
+          ...baseParams,
+          ...form,
+          seed,
+        },
+      }
     },
     updateLoadingState(isLoading: boolean) {
       this.isLoading = isLoading;
