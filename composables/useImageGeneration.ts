@@ -1,17 +1,18 @@
 
 import { createImageGenerationService } from "@/services/image-generation/createImageGenerationService";
+import useImageHistory  from "@/composables/useImageHistory";
 import { compressBase64 } from "@/utils/compressBase64"; 
 import type { NewImageParamsUser } from "@/types/image";
 
 export function useImageGeneration() {
   const { $storageService, $authService, $dbService } = useNuxtApp();
   const imageService = createImageGenerationService();
+  const { replaceImageInHistory } = useImageHistory();
 
   const userStore = useUserStore();
   const imageStore = useImageStore();
 
   const newImageParams = computed(() => imageStore.imageGeneration.newImageParams);
-  const generatedImage = computed(() => imageStore.imageGeneration.generatedImage);
   const currentImage = computed(() => imageStore.currentImage.data);
   const error = ref({ status: false, message: ""});
   
@@ -39,10 +40,15 @@ export function useImageGeneration() {
   }
 
   async function processImageAndSave() {
+    if (!currentImage.value) {
+      error.value = { status: true, message: "No current image to process." };
+      return;
+    }
+
     error.value = { status: false, message: "" };
     imageStore.updateLoadingState(true);
     try {
-      const base64 = generatedImage.value.base64;
+      const base64 = currentImage.value.base64;
       if (!base64) throw new Error("No image generated to process.");
 
       const userId = userStore.user?.id;
@@ -56,8 +62,12 @@ export function useImageGeneration() {
       const url = await $storageService.addItem(compressedFile, userId);
       if (!url) throw new Error("Failed to upload image to storage.");
 
-      const metadata = imageService.createMetadata(compressedFile, id, timestamp, url, generatedImage.value.data);
+      const metadata = imageService.createMetadata(compressedFile, id, timestamp, url, currentImage.value.data);
       await $dbService.addUserImage(metadata, userId);
+
+      currentImage.value.isSaved = true;
+      replaceImageInHistory();
+      
     } catch (err) {
       error.value = { 
         status: true, 
@@ -72,7 +82,6 @@ export function useImageGeneration() {
     generateImage,
     processImageAndSave,
     newImageParams,
-    currentImage,
     error,
   };
 } 

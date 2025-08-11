@@ -7,11 +7,21 @@ let initialized = false;
 export default function useImageHistory() {
   const imageStore = useImageStore();
   const recentImages = computed(() => imageStore.imageHistory.data);
+  const currentImage = computed(() => imageStore.currentImage.data);
   const isLoading = computed(() => imageStore.imageHistory.isLoading);
 
   function getImagesHistory() {
     const data = imageHistoryService.getImagesHistory();
     imageStore.updateImageHistory(data);
+  }
+
+  function replaceImageInHistory() {
+    if (!currentImage.value || !currentImage.value.localStorageId) {
+      console.warn("No current image to replace in history.");
+      return;
+    }
+    imageHistoryService.replaceImageInHistory(currentImage.value);
+    getImagesHistory();
   }
 
   function clearImagesHistory() {
@@ -23,7 +33,8 @@ export default function useImageHistory() {
       const validImage = newImage && newImage.base64 && newImage.isGenerated;
 
       if (validImage) {
-        imageHistoryService.addImageToHistory(newImage);
+        const image = { ...newImage, localStorageId: `local-${Date.now()}`};
+        imageHistoryService.addImageToHistory(image);
         getImagesHistory();
       }
     });
@@ -32,6 +43,7 @@ export default function useImageHistory() {
 
   return {
     getImagesHistory,
+    replaceImageInHistory,
     clearImagesHistory,
     recentImages,
     isLoading,
