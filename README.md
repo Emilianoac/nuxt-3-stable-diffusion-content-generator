@@ -1,76 +1,25 @@
-# Stable Diffusion generator
+# Pixur 
 
-An AI image generator using the API of stability.ai and Nuxt 3 
+A web application that allows users to generate images from text prompts using the Stability.ai API.
 
+## Features
 
-## Setup
+- 🖼️ Generate images from text prompts
+- 💾 Save generated images to your devic
 
-Make sure to install the dependencies:
+## Tech Stack
+- Nuxt 3
+- Tailwind CSS
+- Stability.ai API
+- Firebase
 
-```bash
-# npm
-npm install
+## Screenshots
 
-# pnpm
-pnpm install
+#### Home
+![home](https://res.cloudinary.com/du6pa3pa5/image/upload/v1754918436/home_dft52d.webp)
 
-# yarn
-yarn install
+#### Gallery
+![gallery](https://res.cloudinary.com/du6pa3pa5/image/upload/v1754918427/gallery_funq0x.webp)
 
-# bun
-bun install
-```
-
-## Development Server
-
-Start the development server on `http://localhost:3000`:
-
-```bash
-# npm
-npm run dev
-
-# pnpm
-pnpm run dev
-
-# yarn
-yarn dev
-
-# bun
-bun run dev
-```
-
-## Production
-
-Build the application for production:
-
-```bash
-# npm
-npm run build
-
-# pnpm
-pnpm run build
-
-# yarn
-yarn build
-
-# bun
-bun run build
-```
-
-Locally preview production build:
-
-```bash
-# npm
-npm run preview
-
-# pnpm
-pnpm run preview
-
-# yarn
-yarn preview
-
-# bun
-bun run preview
-```
-
-Check out the [deployment documentation](https://nuxt.com/docs/getting-started/deployment) for more information.
+#### Image details
+![image details](https://res.cloudinary.com/du6pa3pa5/image/upload/v1754918427/gallery_funq0x.webp)
