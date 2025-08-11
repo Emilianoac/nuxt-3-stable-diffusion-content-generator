@@ -1,6 +1,6 @@
 <script lang="ts" setup>
   const { recentImages, isLoading, getImagesHistory } = useImageHistory();
-  const { setCurrentImage } = useCurrentImage();
+  const { setCurrentImage, currentImage } = useCurrentImage();
 
   onNuxtReady(() => {
     getImagesHistory();
@@ -15,6 +15,7 @@
         v-for="(item, index) in recentImages" 
         :key="index" 
         @click="setCurrentImage(item)"
+        :class="{ 'border border-malachite-400': currentImage?.base64 === item.base64 }"
         class="p-2 bg-slate-50 dark:bg-gray-700 rounded-lg">
           <img 
             :src="item.base64" 
