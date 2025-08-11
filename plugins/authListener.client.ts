@@ -1,12 +1,12 @@
 
 export default defineNuxtPlugin(() => {
   const userStore = useUserStore();
-  const imageGenerationStore = useImageGenerationStore();
+  const imageStore = useImageStore();
   const { $authService } = useNuxtApp();
 
   $authService.listenToAuthChanges((user) => {
     userStore.updateUser(user);
 
-    if (!user) imageGenerationStore.$reset();
+    if (!user) imageStore.$reset();
   });
 });

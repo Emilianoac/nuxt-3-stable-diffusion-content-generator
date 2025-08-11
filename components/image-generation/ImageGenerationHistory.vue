@@ -18,12 +18,7 @@
         />
       </div>
     </div>
-    <USkeleton 
-      v-if="isLoading"
-      class="h-24 w-full" 
-      :ui="{ background: 'bg-gray-50 dark:bg-gray-600'}"
-    />
-    <div v-if="!recentImages.length && !isLoading" class="text-center text-gray-300 dark:text-gray-400 my-5">
+    <div v-if="!recentImages.length" class="text-center text-gray-300 dark:text-gray-400 my-5">
       You don't have any generated images yet.
     </div>
   </div>

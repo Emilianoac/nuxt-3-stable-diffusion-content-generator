@@ -4,8 +4,7 @@
   import ModalLogin from "@/components/ModalLogin.vue";
 
   const userStore = useUserStore();
-  const imageGenerationStore = useImageGenerationStore();
-  const { generateImage, error } = useImageGeneration();
+  const { generateImage, newImageParams, error } = useImageGeneration();
   const modal = useModal();
 
   async function onSubmit (event: FormSubmitEvent<ImageSchema>) {
@@ -19,7 +18,7 @@
   <UForm 
     class="bg-white dark:bg-cloud-burst-800 space-y-4 p-4 rounded-md" 
     :schema="imageSchema" 
-    :state="imageGenerationStore.newImageParams" 
+    :state="newImageParams" 
     @submit="onSubmit">
     <h1 class="font-bold text-lg">Create a new image</h1>
 
@@ -48,7 +47,7 @@
         </UPopover>
       </template>
       <template #default>
-        <UTextarea v-model="imageGenerationStore.newImageParams.prompt" placeholder="Insert prompt" />
+        <UTextarea v-model="newImageParams.prompt" placeholder="Insert prompt" />
       </template> 
     </UFormGroup>
 
@@ -77,7 +76,7 @@
         </UPopover>
       </template>
       <template #default>
-        <UTextarea v-model="imageGenerationStore.newImageParams.negative_prompt" placeholder="Insert negative prompt" />
+        <UTextarea v-model="newImageParams.negative_prompt" placeholder="Insert negative prompt" />
       </template> 
     </UFormGroup>
 
@@ -104,7 +103,7 @@
         </UPopover>
       </template>
       <template #default>
-        <UInput v-model="imageGenerationStore.newImageParams.seed" type="number" placeholder="Seed" />
+        <UInput v-model="newImageParams.seed" type="number" placeholder="Seed" />
       </template> 
     </UFormGroup>
 
@@ -113,7 +112,7 @@
       name="steps" 
       :ui="{label: { base: 'flex justify-between items-center w-full mb-1'}}">
       <template #label>
-        <span >Steps: <strong>{{ imageGenerationStore.newImageParams.steps.toString()}}</strong> </span>
+        <span >Steps: <strong>{{newImageParams.steps.toString()}}</strong> </span>
         <UPopover :ui="{wrapper: 'flex'}">
           <UButton 
             size="2xs" 
@@ -130,7 +129,7 @@
         </UPopover>
       </template>
       <template #default>
-        <URange :min="10" :max="20" v-model="imageGenerationStore.newImageParams.steps" />
+        <URange :min="10" :max="20" v-model="newImageParams.steps" />
       </template> 
     </UFormGroup>
 
@@ -139,7 +138,7 @@
       name="cfg_scale"
       :ui="{label: { base: 'flex justify-between items-center w-full mb-1'}}">
       <template #label>
-        <span >CFG Scale: <strong>{{ imageGenerationStore.newImageParams.cfg_scale.toString()}}</strong> </span>
+        <span >CFG Scale: <strong>{{ newImageParams.cfg_scale.toString()}}</strong> </span>
         <UPopover :ui="{wrapper: 'flex'}">
           <UButton 
             size="2xs" 
@@ -160,7 +159,7 @@
         </UPopover>
       </template>
       <template #default>
-        <URange :min="0" :max="35" v-model="imageGenerationStore.newImageParams.cfg_scale" />
+        <URange :min="0" :max="35" v-model="newImageParams.cfg_scale" />
       </template>
     </UFormGroup>
 

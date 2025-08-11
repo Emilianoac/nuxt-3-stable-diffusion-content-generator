@@ -1,9 +1,7 @@
 <script lang="ts" setup>
-  const imageGenerationStore = useImageGenerationStore();
-  const { processImageAndSave, error } = useImageGeneration();
   const toast = useToast();
+  const { generatedImage, error, processImageAndSave } = useImageGeneration();
   const isImageDetailsOpen = ref(false);
-
 
   async function handleSave() {
     await processImageAndSave();
@@ -26,19 +24,19 @@
 
 <template>
   <!-- Placeholder Image -->
-  <Icon v-if="!imageGenerationStore.generatedImage.isGenerated" class=" text-[10em] lg:text-[20em] text-slate-300 dark:text-cloud-burst-500" name="material-symbols:image-outline"/>
+  <Icon v-if="!generatedImage.isGenerated" class=" text-[10em] lg:text-[20em] text-slate-300 dark:text-cloud-burst-500" name="material-symbols:image-outline"/>
   
   <div v-else>
     <!-- Actions -->
     <div class="flex items-center justify-end top-0 right-0 py-2 w-full">
-      <UTooltip :text="!imageGenerationStore.generatedImage.isSaved ? 'Save image' : 'Image is already saved'">
-        <UButton size="xs" :disabled="imageGenerationStore.generatedImage.isSaved" color="primary" @click="handleSave"
+      <UTooltip :text="!generatedImage.isSaved ? 'Save image' : 'Image is already saved'">
+        <UButton size="xs" :disabled="generatedImage.isSaved" color="primary" @click="handleSave"
           class="me-2 font-bold disabled:opacity-50">
           <Icon name="material-symbols:save" />
         </UButton>
       </UTooltip>
       <UTooltip text="Download Image">
-        <UButton size="xs" color="black" class="me-2 font-bold" :to="imageGenerationStore.generatedImage.base64"
+        <UButton size="xs" color="black" class="me-2 font-bold" :to="generatedImage.base64"
           download="generatedImage.png">
           <Icon name="material-symbols:download-2" />
         </UButton>
@@ -51,7 +49,7 @@
     </div>
 
     <!-- Generated Image -->
-    <img class="rounded-md lg:h-[80vh]" :src="imageGenerationStore.generatedImage.base64" />
+    <img class="rounded-md lg:h-[80vh]" :src="generatedImage.base64" />
   </div>
 
   <!-- Generated image details -->
@@ -64,7 +62,7 @@
         </div>
       </template>
       <ul class="max-h-[400px] overflow-auto">
-        <li v-for="(value, key, index) in imageGenerationStore.generatedImage.data" :key="index">
+        <li v-for="(value, key, index) in generatedImage.data" :key="index">
           <template v-if="value">
             <p class="font-bold ">{{ key.split("_").join(" ") }}</p>
             <p class="opacity-70">{{ value }}</p>

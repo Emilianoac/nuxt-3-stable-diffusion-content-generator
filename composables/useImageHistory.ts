@@ -1,32 +1,25 @@
 import { watch } from "vue";
 import { imageHistoryService } from "@/services/domain/image-history/ImageHistoryService";
-import { useImageHistoryStore } from "@/stores/imageHistory";
-import { useImageGenerationStore } from "@/stores/imageGeneration";
-import { storeToRefs } from "pinia";
+import { useImageStore } from "@/stores/imageStore";
 
 let initialized = false;
 
 export default function useImageHistory() {
-  const imageGenerationStore = useImageGenerationStore();
-  const imageHistoryStore = useImageHistoryStore();
-  const { recentImages, isLoading } = storeToRefs(imageHistoryStore);
+  const imageStore = useImageStore();
+  const recentImages = computed(() => imageStore.imageHistory.data);
+  const isLoading = computed(() => imageStore.imageHistory.isLoading);
 
   function getImagesHistory() {
-    imageHistoryStore.setLoadingState(true);
     const data = imageHistoryService.getImagesHistory();
-    if (data) {
-      recentImages.value = data;
-    }
-    imageHistoryStore.setLoadingState(false);
+    imageStore.updateImageHistory(data);
   }
 
   function clearImagesHistory() {
     imageHistoryService.clearHistory();
-    recentImages.value = [];
   }
 
   if (!initialized) {
-    watch(() => imageGenerationStore.generatedImage, (newImage) => {
+    watch(() => imageStore.imageGeneration.generatedImage, (newImage) => {
       const validImage = newImage && newImage.base64 && newImage.isGenerated;
 
       if (validImage) {
