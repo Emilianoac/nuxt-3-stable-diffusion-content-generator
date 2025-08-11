@@ -1,6 +1,7 @@
 export default function useAuth() {
   const { $authService, $dbService } = useNuxtApp();
   const userStore = useUserStore();
+  const { clearImagesHistory } = useImageHistory();
 
   const error = ref({ status: false, message: "" });
 
@@ -46,6 +47,7 @@ export default function useAuth() {
     userStore.updateLoading(true);
     try {
       await $authService.logout();
+      clearImagesHistory();
       return true;
     } catch (err) {
       error.value = {
