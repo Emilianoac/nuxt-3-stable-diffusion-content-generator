@@ -80,6 +80,8 @@ export const useImageStore = defineStore("imageStore", {
           seed,
         },
       }
+
+      this.currentImage.data = this.imageGeneration.generatedImage;
     },
 
     updateImageHistory(data: GenereatedImage[]) {

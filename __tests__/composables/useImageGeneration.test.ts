@@ -1,61 +1,26 @@
-import "@/__mocks__/services/mockImageGenerationService";
+import "@/__mocks__/services/api/generate-image/generateImageAPIMock";
 import "@/__mocks__/nuxt/mockNuxtApp";
-import { mockDbService } from "@/__mocks__/nuxt/mockNuxtApp";
+import { initStores, type PiniaStores } from "@/__mocks__/pinia/piniaStores";
 
 import { describe, it, expect, beforeEach, vi } from "vitest";
 import { useImageGeneration } from "@/composables/useImageGeneration";
-import { initStores, type PiniaStores } from "@/__mocks__/pinia/piniaStores";
 
 describe("useImageGeneration", () => {
-  let userStore: PiniaStores["userStore"];
   let imageStore: PiniaStores["imageStore"];
 
   beforeEach(() => {
-    ({ imageStore, userStore } = initStores());
+    ({ imageStore } = initStores());
   });
 
   it("should generate image and update store", async () => {
-    // 🛠️ Arrange
+    // Arrange
     const { generateImage } = useImageGeneration();
     const formData = { prompt: "a cute cat", seed: 0, steps: 15, cfg_scale: 7 };
 
-    // 🚀 Act
+    // Act
     await generateImage(formData);
 
-
-    // ✅ Assert
+    // Assert
     expect(imageStore.updateGeneratedImage).toHaveBeenCalledWith("fakeBase64", 123, formData);
-  });
-
-  it.skip("should process image and save metadata", async () => {
-    // 🛠️ Arrange
-    const { processImageAndSave, error } = useImageGeneration();
-    
-    // 🚀 Act
-    await processImageAndSave();
-
-    // ✅ Assert
-    expect(mockDbService.addUserImage).toHaveBeenCalledWith(
-      expect.objectContaining({
-        id: expect.stringContaining("image-"),
-        url: expect.stringContaining("http"),
-        ...imageStore.generatedImage.data,
-      }),
-      userStore.user?.id
-    );
-    expect(error.value.status).toBe(false);
-  });
-
-  it.skip("should set error if not user in store", async () => {
-    // 🛠️ Arrange
-    userStore.user = null;
-    const { processImageAndSave, error } = useImageGeneration();
-
-    // 🚀 Act
-    await processImageAndSave();
-
-    // ✅ Assert
-    expect(error.value.status).toBe(true);
-    expect(error.value.message).toMatch(/User is not authenticated/);
   });
 });

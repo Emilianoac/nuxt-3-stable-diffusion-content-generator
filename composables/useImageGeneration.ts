@@ -1,5 +1,6 @@
 
 import { imageGenerationService } from "@/services/image-generation/createImageGenerationService";
+import { generateImageAPI } from "@/services/api/generate-image/generateImageAPI";
 import useImageHistory  from "@/composables/useImageHistory";
 import useAuth from "@/composables/useAuth";
 import type { NewImageParamsUser } from "@/types/image";
@@ -7,7 +8,6 @@ import type { NewImageParamsUser } from "@/types/image";
 export function useImageGeneration() {
   const { $storageService, $dbService } = useNuxtApp();
   const { getUserIdToken } = useAuth();
-
   const { replaceImageInHistory } = useImageHistory();
 
   const userStore = useUserStore();
@@ -22,15 +22,11 @@ export function useImageGeneration() {
     resetError();
     try {
       const useIdToken = await getUserIdToken();
-      const imageData = await imageGenerationService.generateImage(form, useIdToken);
+      const imageData = await generateImageAPI(form, useIdToken);
 
       imageStore.updateGeneratedImage(imageData.base64, imageData.seed, form);
-      imageStore.updateCurrentImage(imageStore.imageGeneration.generatedImage);
     } catch (err) {
-      error.value = {
-        status: true,
-        message: err instanceof Error ? err.message : "An error occurred while generating the image."
-      }
+      manageError(err);
     } finally {
       imageStore.updateLoadingState(false);
     }
@@ -73,6 +69,13 @@ export function useImageGeneration() {
     } finally {
       imageStore.updateLoadingState(false);
     }
+  }
+
+  function manageError(err: unknown) {
+    error.value = {
+      status: true,
+      message: err instanceof Error ? err.message : "An unexpected error occurred."
+    };
   }
 
   function resetError() {
