@@ -1,5 +1,5 @@
 import { watch } from "vue";
-import { imageHistoryService } from "@/services/domain/image-history/ImageHistoryService";
+import { imageHistoryService } from "@/services/image-history/ImageHistoryService";
 import { useImageStore } from "@/stores/imageStore";
 
 let initialized = false;

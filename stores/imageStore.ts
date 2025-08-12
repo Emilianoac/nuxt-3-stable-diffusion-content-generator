@@ -1,6 +1,6 @@
 import { defineStore } from "pinia";
 import type { NewImageParamsUser } from "@/types/image";
-import type { GenereatedImage } from "@/services/domain/image-history/ImageHistoryService.interface";
+import type { GenereatedImage } from "@/services/image-history/ImageHistoryService.interface";
 
 interface State {
   isLoading: boolean;
