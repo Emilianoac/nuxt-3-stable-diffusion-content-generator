@@ -64,11 +64,22 @@ export default function useAuth() {
     return await $authService.getUser();
   }
 
+  async function getUserIdToken() {
+    try {
+      const idToken = await $authService.getidToken();
+      if (!idToken) throw new Error("User is not authenticated.");
+      return idToken;
+    } catch (err) {
+      throw error
+    }
+  }
+
   return {
     login,
     register,
     logout,
     getUser,
+    getUserIdToken,
     
     error,
   };
