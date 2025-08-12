@@ -1,20 +1,19 @@
 import { setActivePinia, createPinia } from "pinia";
-import { useImageGenerationStore } from "@/stores/imageGeneration";
+import { useImageStore } from "@/stores/imageStore";
 import { useUserStore } from "@/stores/user";
 import { vi } from "vitest";
-
-
 export interface PiniaStores {
-  imageStore: ReturnType<typeof useImageGenerationStore>;
+  imageStore: ReturnType<typeof useImageStore>;
   userStore: ReturnType<typeof useUserStore>;
 }
 
 export function initStores( overrides?: PiniaStores): PiniaStores {
   setActivePinia(createPinia());
 
-  const imageStore = useImageGenerationStore();
+  const imageStore = useImageStore();
   imageStore.updateGeneratedImage = vi.fn();
-  imageStore.generatedImage = {
+  imageStore.updateCurrentImage = vi.fn();
+  imageStore.imageGeneration.generatedImage = {
     base64: "fakeBase64",
     isGenerated: true,
     isSaved: false,
@@ -27,7 +26,7 @@ export function initStores( overrides?: PiniaStores): PiniaStores {
       samples: 1,
       model: "some-model",
     },
-    ...(overrides?.imageStore?.generatedImage ?? {}),
+    ...(overrides?.imageStore ?? {}),
   } 
 
   const userStore = useUserStore();
