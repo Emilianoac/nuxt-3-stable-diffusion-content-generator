@@ -1,11 +1,13 @@
 
 import { createImageGenerationService } from "@/services/image-generation/createImageGenerationService";
 import useImageHistory  from "@/composables/useImageHistory";
-import { compressBase64 } from "@/utils/compressBase64"; 
+import useAuth from "@/composables/useAuth";
 import type { NewImageParamsUser } from "@/types/image";
 
 export function useImageGeneration() {
-  const { $storageService, $authService, $dbService } = useNuxtApp();
+  const { $storageService, $dbService } = useNuxtApp();
+  const { getUserIdToken } = useAuth();
+
   const imageService = createImageGenerationService();
   const { replaceImageInHistory } = useImageHistory();
 
@@ -17,17 +19,13 @@ export function useImageGeneration() {
   const error = ref({ status: false, message: ""});
   
   async function generateImage(form: NewImageParamsUser) {
-    error.value = { status: false, message: "" };
     imageStore.updateLoadingState(true);
+    resetError();
     try {
-      const idToken = await $authService.getidToken();
-      if (!idToken) throw new Error("User is not authenticated.");
+      const useIdToken = await getUserIdToken();
+      const imageData = await imageService.generateImage(form, useIdToken);
 
-      const data = await imageService.generateImage(form, idToken);
-      if (!data) throw new Error("Image generation failed or returned no data");
-
-      const compressedBase64 = await compressBase64(data.base64, 0.7);
-      imageStore.updateGeneratedImage(compressedBase64, data.seed, form);
+      imageStore.updateGeneratedImage(imageData.base64, imageData.seed, form);
       imageStore.updateCurrentImage(imageStore.imageGeneration.generatedImage);
     } catch (err) {
       error.value = {
@@ -40,13 +38,13 @@ export function useImageGeneration() {
   }
 
   async function processImageAndSave() {
+    imageStore.updateLoadingState(true);
+    resetError();
+    
     if (!currentImage.value) {
       error.value = { status: true, message: "No current image to process." };
       return;
     }
-
-    error.value = { status: false, message: "" };
-    imageStore.updateLoadingState(true);
     try {
       const base64 = currentImage.value.base64;
       if (!base64) throw new Error("No image generated to process.");
@@ -76,6 +74,10 @@ export function useImageGeneration() {
     } finally {
       imageStore.updateLoadingState(false);
     }
+  }
+
+  function resetError() {
+    error.value = { status: false, message: "" };
   }
 
   return {
