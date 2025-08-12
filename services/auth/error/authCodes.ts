@@ -6,7 +6,3 @@ export type AuthErrorCode =
   | "WEAK_PASSWORD"
   | "NETWORK_ERROR"
   | "UNKNOW";
-
-export enum AuthProvider {
-  Firebase = "firebase",
-}
