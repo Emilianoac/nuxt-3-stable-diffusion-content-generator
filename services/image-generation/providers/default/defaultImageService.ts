@@ -1,8 +1,10 @@
 import { base64ToFile } from "@/services/image-generation/utils/base64Tofile";
 import { compressImage } from "@/services/image-generation/utils/compressImage";
+import { compressBase64 } from "@/services/image-generation/utils/compressBase64";
 import type { ImageGenerationService } from "@/services/image-generation/imageGenerationService";
 
 export function createDefaultImageGenerationService(): ImageGenerationService {
+
   return {
     async generateImage(form, authToken) {
       const response = await $fetch<{ base64: string, seed: number }>("api/create/text-to-image", {
@@ -16,10 +18,14 @@ export function createDefaultImageGenerationService(): ImageGenerationService {
       if (!response || !response.base64) {
         throw new Error("Image generation failed or returned no data");
       }
-      return {
-        base64: response.base64,
+
+      const compressedBase64 = await compressBase64(response.base64, 0.7);
+      const data = {
+        base64: compressedBase64,
         seed: response.seed,
-      };
+      }
+
+      return data;
     },
 
     async processBase64ToCompressedFile(base64, fileName) {
