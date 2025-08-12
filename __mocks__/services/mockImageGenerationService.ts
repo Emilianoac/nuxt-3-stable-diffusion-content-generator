@@ -1,5 +1,5 @@
 import { vi} from "vitest";
-import type { ImageGenerationService } from "@/services/image-generation/imageGenerationService";
+import type { ImageGenerationService } from "~/services/image-generation/imageGenerationService.interface";
 
 export const generateImageMock = vi.fn(() => Promise.resolve({ base64: "fakeBase64", seed: 123 }));
 export const processBase64ToCompressedFileMock = vi.fn(() => Promise.resolve(new File(["data"], "image.png", { type: "image/png" })));

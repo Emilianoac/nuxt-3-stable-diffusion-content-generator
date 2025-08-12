@@ -1,5 +1,5 @@
 
-import { createImageGenerationService } from "@/services/image-generation/createImageGenerationService";
+import { imageGenerationService } from "@/services/image-generation/createImageGenerationService";
 import useImageHistory  from "@/composables/useImageHistory";
 import useAuth from "@/composables/useAuth";
 import type { NewImageParamsUser } from "@/types/image";
@@ -8,7 +8,6 @@ export function useImageGeneration() {
   const { $storageService, $dbService } = useNuxtApp();
   const { getUserIdToken } = useAuth();
 
-  const imageService = createImageGenerationService();
   const { replaceImageInHistory } = useImageHistory();
 
   const userStore = useUserStore();
@@ -23,7 +22,7 @@ export function useImageGeneration() {
     resetError();
     try {
       const useIdToken = await getUserIdToken();
-      const imageData = await imageService.generateImage(form, useIdToken);
+      const imageData = await imageGenerationService.generateImage(form, useIdToken);
 
       imageStore.updateGeneratedImage(imageData.base64, imageData.seed, form);
       imageStore.updateCurrentImage(imageStore.imageGeneration.generatedImage);
@@ -55,12 +54,12 @@ export function useImageGeneration() {
       const timestamp = Date.now();
       const id = `image-${timestamp}`;
 
-      const compressedFile = await imageService.processBase64ToCompressedFile(base64, id);
+      const compressedFile = await imageGenerationService.processBase64ToCompressedFile(base64, id);
       
       const url = await $storageService.addItem(compressedFile, userId);
       if (!url) throw new Error("Failed to upload image to storage.");
 
-      const metadata = imageService.createMetadata(compressedFile, id, timestamp, url, currentImage.value.data);
+      const metadata = imageGenerationService.createMetadata(compressedFile, id, timestamp, url, currentImage.value.data);
       await $dbService.addUserImage(metadata, userId);
 
       currentImage.value.isSaved = true;
