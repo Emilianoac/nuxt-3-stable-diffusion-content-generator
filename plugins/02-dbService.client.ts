@@ -1,19 +1,14 @@
 
 import { getFirebaseServices } from "@/lib/firebaseClient";
-import { createDbService, Provider } from "@/services/db/createDbService";
+import { createDBService } from "@/services/db/createDbService";
 
 export default defineNuxtPlugin(() => {
-  const provider = "firebase";
-
-  if (provider === "firebase") {
+  try {
     const { db } = getFirebaseServices();
-    const dbService = createDbService({
-      provider: Provider.Firebase,
-      deps: { db }
-    });
-
+    const dbService = createDBService(db);
     return { provide: { dbService } };
-  } else {
-    console.warn("No valid database provider configured.");
+  } catch (error) {
+    console.error("Failed to initialize DB service:", error);
+    throw new Error("Database service initialization failed");
   }
 });
