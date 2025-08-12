@@ -1,21 +1,15 @@
-import { createUserImageService, Provider } from "@/services/user-images/createUserImageService";
+import { createUserImageService } from "@/services/user-images/createUserImageService";
 import { getFirebaseServices } from "@/lib/firebaseClient";
 
 export default defineNuxtPlugin(() => {
-  const provider = "firebase";
-
-  if (provider === "firebase") {
+  try {
     const { db } = getFirebaseServices();
-
-    const userImageService = createUserImageService({
-      provider: Provider.Firebase,
-      deps: { db }
-    })
-
+    const userImageService = createUserImageService(db);
     return {
       provide: { userImageService }
-    }
-  } else {
-    console.warn("No valid user image service provider configured.");
+    };
+  } catch (error) {
+    console.error("Failed to initialize user image service:", error);
+    throw new Error("User image service initialization failed");
   }
 });
