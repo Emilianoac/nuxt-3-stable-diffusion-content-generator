@@ -1,19 +1,14 @@
 
 import { getFirebaseServices } from "@/lib/firebaseClient";
-import { createStorageService, Provider  } from "~/services/storage/createStorageService";
+import { createStorageService } from "@/services/storage/createStorageService";
 
 export default defineNuxtPlugin(() => {
-  const provider = "firebase";
-
-   if (provider === "firebase") {
-     const { storage } = getFirebaseServices();
-     const storageService = createStorageService({
-       provider: Provider.Firebase,
-       deps: { storage }
-     });
- 
-     return { provide: { storageService } };
-   } else {
-     console.warn("No valid database provider configured.");
-   }
+  try {
+    const { storage } = getFirebaseServices();
+    const storageService = createStorageService(storage);
+    return { provide: { storageService } };
+  } catch (error) {
+    console.error("Failed to initialize Storage service:", error);
+    throw new Error("Storage service initialization failed");
+  }
 });
