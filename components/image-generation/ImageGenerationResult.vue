@@ -1,11 +1,11 @@
 <script lang="ts" setup>
   const toast = useToast();
-  const { error, processImageAndSave } = useImageGeneration();
+  const { saveImage, error } = useSaveImage();
   const {currentImage} = useCurrentImage();
   const isImageDetailsOpen = ref(false);
 
   async function handleSave() {
-    await processImageAndSave();
+    await saveImage();
 
     if (!error.value.status) {
       toast.add({
