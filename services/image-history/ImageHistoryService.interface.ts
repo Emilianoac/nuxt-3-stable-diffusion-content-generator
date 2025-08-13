@@ -1,24 +1,7 @@
-
-export interface GenereatedImage {
-  base64?: string;
-  isGenerated: boolean;
-  isSaved: boolean;
-  localStorageId?: string;
-  data: {
-    prompt: string;
-    negative_prompt?: string;
-    seed: number;
-    steps: number;
-    cfg_scale: number;
-    model: string;
-    samples: number;
-    dimensions: string;
-  };
-}
-
+import type { GeneratedImage } from "@/types/image";
 export interface ImageHistoryService {
-  addImageToHistory: (imageData: GenereatedImage) => void;
-  getImagesHistory: () => GenereatedImage[];
-  replaceImageInHistory: (imageData: GenereatedImage) => void;
+  addImageToHistory: (imageData: GeneratedImage) => void;
+  getImagesHistory: () => GeneratedImage[];
+  replaceImageInHistory: (imageData: GeneratedImage) => void;
   clearHistory: () => void;
 }

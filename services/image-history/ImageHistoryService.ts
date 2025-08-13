@@ -1,15 +1,17 @@
 import { localStorageService } from "@/services/local-storage/localStorageService";
-import type { ImageHistoryService, GenereatedImage } from "./ImageHistoryService.interface";
+import type { ImageHistoryService } from "@/services/image-history/ImageHistoryService.interface";
+import type { GeneratedImage } from "@/types/image";
+
 
 function createImageHistoryService(): ImageHistoryService {
   const storageKey = "recentImagesHistory";
 
-  function getHistory(): GenereatedImage[] {
+  function getHistory(): GeneratedImage[] {
     const items = localStorageService.getItem(storageKey);
-    return items ? JSON.parse(items) as GenereatedImage[] : [];
+    return items ? JSON.parse(items) as GeneratedImage[] : [];
   }
 
-  function saveHistory(history: GenereatedImage[]) {
+  function saveHistory(history: GeneratedImage[]) {
     localStorageService.setItem(storageKey, JSON.stringify(history));
   }
 

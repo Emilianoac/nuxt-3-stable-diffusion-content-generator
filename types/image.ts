@@ -20,3 +20,11 @@ export interface ImageMetadata extends NewImageParams {
   url: string
   timestamp: number
 }
+
+export interface GeneratedImage {
+  isGenerated: boolean;
+  isSaved: boolean;
+  base64?: string;
+  localStorageId?: string;
+  data: NewImageParams;
+}

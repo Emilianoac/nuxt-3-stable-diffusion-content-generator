@@ -1,19 +1,18 @@
 import { defineStore } from "pinia";
-import type { NewImageParamsUser } from "@/types/image";
-import type { GenereatedImage } from "@/services/image-history/ImageHistoryService.interface";
+import type { NewImageParamsUser, GeneratedImage } from "@/types/image";
 
 interface State {
   isLoading: boolean;
   error: { status: boolean; message: string };
   currentImage: {
-    data: GenereatedImage | null;
+    data: GeneratedImage | null;
   };
   imageGeneration: {
     newImageParams: NewImageParamsUser;
-    generatedImage: GenereatedImage
+    generatedImage: GeneratedImage
   };
   imageHistory: {
-    data: GenereatedImage[];
+    data: GeneratedImage[];
     isLoading: boolean;
   };
 }
@@ -75,7 +74,7 @@ export const useImageStore = defineStore("imageStore", {
     },
 
     // Current Image Actions
-    updateCurrentImage(data: GenereatedImage | null) {
+    updateCurrentImage(data: GeneratedImage | null) {
       this.currentImage.data = data;
     },
 
@@ -102,7 +101,7 @@ export const useImageStore = defineStore("imageStore", {
     },
 
     // Image History Actions
-    updateImageHistory(data: GenereatedImage[]) {
+    updateImageHistory(data: GeneratedImage[]) {
       this.imageHistory.data = data;
     },
     updateImageHistoryLoadingState(isLoading: boolean) {
