@@ -7,5 +7,6 @@ export interface AuthService {
   logout(): Promise<void>;
   getidToken(): Promise<string | null>;
   getUser(): Promise<User | null>;
+  getUserId(): string;
   listenToAuthChanges(callback: (user: User | null) => void): () => void;
 }

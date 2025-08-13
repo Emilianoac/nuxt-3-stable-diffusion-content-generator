@@ -68,6 +68,15 @@ export function createAuthService(auth: Auth): AuthService {
       return userPromise;
     },
 
+    getUserId() {
+      const user = auth.currentUser;
+      const userId = user?.uid
+      if (!userId) {
+        throw new Error("No authenticated user found");
+      }
+      return userId;
+    },
+
     listenToAuthChanges(callback: (user: { id: string; email: string; name?: string } | null) => void) {
       return onAuthStateChanged(auth, (user) => {
         if (user) {
