@@ -15,7 +15,7 @@ export default function useImageHistory() {
     imageStore.updateImageHistory(data);
   }
 
-  function replaceImageInHistory() {
+  function updateImageInLocalHistory() {
     if (!currentImage.value || !currentImage.value.localStorageId) {
       console.warn("No current image to replace in history.");
       return;
@@ -43,7 +43,7 @@ export default function useImageHistory() {
 
   return {
     getImagesHistory,
-    replaceImageInHistory,
+    updateImageInLocalHistory,
     clearImagesHistory,
     recentImages,
     isLoading,
