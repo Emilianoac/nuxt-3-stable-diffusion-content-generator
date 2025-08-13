@@ -1,9 +1,9 @@
 import { localStorageService } from "@/services/local-storage/localStorageService";
-import type { ImageHistoryService } from "@/services/image-history/ImageHistoryService.interface";
+import type { LocalImageHistoryUseCase } from "@/services/use-cases/local-image-history/localImageHistory.interface";
 import type { GeneratedImage } from "@/types/image";
 
 
-function createImageHistoryService(): ImageHistoryService {
+function createImageLocalHistoryService(): LocalImageHistoryUseCase {
   const storageKey = "recentImagesHistory";
 
   function getHistory(): GeneratedImage[] {
@@ -67,4 +67,4 @@ function createImageHistoryService(): ImageHistoryService {
   }
 }
 
-export const imageHistoryService = createImageHistoryService();
+export const imageLocalHistoryService = createImageLocalHistoryService();

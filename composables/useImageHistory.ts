@@ -1,5 +1,5 @@
 import { watch } from "vue";
-import { imageHistoryService } from "@/services/image-history/ImageHistoryService";
+import { imageLocalHistoryService } from "@/services/use-cases/local-image-history/localImageHistoryUseCase";
 import { useImageStore } from "@/stores/imageStore";
 
 let initialized = false;
@@ -11,7 +11,7 @@ export default function useImageHistory() {
   const isLoading = computed(() => imageStore.imageHistory.isLoading);
 
   function getImagesHistory() {
-    const data = imageHistoryService.getImagesHistory();
+    const data = imageLocalHistoryService.getImagesHistory();
     imageStore.updateImageHistory(data);
   }
 
@@ -20,12 +20,12 @@ export default function useImageHistory() {
       console.warn("No current image to replace in history.");
       return;
     }
-    imageHistoryService.replaceImageInHistory(currentImage.value);
+    imageLocalHistoryService.replaceImageInHistory(currentImage.value);
     getImagesHistory();
   }
 
   function clearImagesHistory() {
-    imageHistoryService.clearHistory();
+    imageLocalHistoryService.clearHistory();
   }
 
   if (!initialized) {
@@ -34,7 +34,7 @@ export default function useImageHistory() {
 
       if (validImage) {
         const image = { ...newImage, localStorageId: `local-${Date.now()}`};
-        imageHistoryService.addImageToHistory(image);
+        imageLocalHistoryService.addImageToHistory(image);
         getImagesHistory();
       }
     });
