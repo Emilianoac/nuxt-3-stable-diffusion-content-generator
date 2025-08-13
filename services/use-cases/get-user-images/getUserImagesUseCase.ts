@@ -1,9 +1,9 @@
 import { ref, onValue, get, child, query, orderByChild, limitToLast, endBefore } from "firebase/database";
-import type { UserImageService } from "./userImageService.interface";
+import type { GetUserImagesUseCase } from "./getUserImagesUseCase.interface";
 import type { ImageMetadata } from "@/types/image";
 import type { Database } from "firebase/database";
 
-export function createUserImageService(db: Database): UserImageService {
+export function createGetUserImagesUseCase(db: Database): GetUserImagesUseCase {
   return {
     async getPaginatedUserImages(userId, limit = 12, lastTimestamp) {
       console.log(lastTimestamp);
