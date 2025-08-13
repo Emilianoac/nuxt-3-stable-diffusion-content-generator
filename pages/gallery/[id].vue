@@ -4,7 +4,7 @@
   const route = useRoute();
   const id = route.params.id;
 
-  const { getSingleImage, image, isLoading, error } = useUserImages();
+  const { getSingleImage, image, isLoading, error } = useGetUserImages();
 
   onNuxtReady(async () => {
     if (id) {

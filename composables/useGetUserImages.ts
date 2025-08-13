@@ -1,8 +1,8 @@
 import type { ImageMetadata } from "@/types/image";
 
-export default function useUserImages() {
+export default function useGetUserImages() {
   const useStore = useUserStore();
-  const { $userImageService } = useNuxtApp();
+  const { $getUserImagesService } = useNuxtApp();
 
   const images = ref<ImageMetadata[]>([]);
   const image = ref<ImageMetadata | null>(null);
@@ -18,7 +18,7 @@ export default function useUserImages() {
 
     isLoading.value = true;
 
-    const newImages = await $userImageService.getPaginatedUserImages(userId, 12, lastTimestamp.value ?? undefined);
+    const newImages = await $getUserImagesService.getPaginatedUserImages(userId, 12, lastTimestamp.value ?? undefined);
 
     if (newImages.length === 0) {
       isEndReached.value = true;
@@ -38,7 +38,7 @@ export default function useUserImages() {
       const userId = useStore.user?.id;
       if (!userId) throw new Error("User not authenticated");
       
-      const data = await $userImageService.getSingleImage(userId, imageId);
+      const data = await $getUserImagesService.getSingleImage(userId, imageId);
       if (!data) throw new Error("Image not found");
       image.value = data;
     } catch (err) {

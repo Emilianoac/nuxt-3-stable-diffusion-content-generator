@@ -1,7 +1,7 @@
 <script lang="ts" setup>
   useSeoMeta({title: "Gallery | Pixur"});
   
-  const { getPaginatedImages, images, hasLoadedOnce } = useUserImages();
+  const { getPaginatedImages, images, hasLoadedOnce } = useGetUserImages();
 
   onNuxtReady(() => {
     if (!images.value.length) {
