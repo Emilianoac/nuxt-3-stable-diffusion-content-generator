@@ -4,6 +4,7 @@ import type { GenereatedImage } from "@/services/image-history/ImageHistoryServi
 
 interface State {
   isLoading: boolean;
+  error: { status: boolean; message: string };
   currentImage: {
     data: GenereatedImage | null;
   };
@@ -26,6 +27,7 @@ const newImageBaseParams = {
 export const useImageStore = defineStore("imageStore", {
   state: (): State => ({
     isLoading: false,
+    error: { status: false, message: "" },
 
     currentImage: {
       data: null,
@@ -61,14 +63,29 @@ export const useImageStore = defineStore("imageStore", {
     },
   }),
   actions: {
+
+    // Global Actions
     updateLoadingState(isLoading: boolean) {
       this.isLoading = isLoading;
     },
 
+    updateError(status: boolean, message: string) {
+      this.error.status = status;
+      this.error.message = message;
+    },
+
+    // Current Image Actions
     updateCurrentImage(data: GenereatedImage | null) {
       this.currentImage.data = data;
     },
 
+    updateCurrentImageSaved(isSaved: boolean) {
+      if (this.currentImage.data) {
+        this.currentImage.data.isSaved = isSaved;
+      }
+    },
+
+    // Image Generation Actions
     updateGeneratedImage(base64: string, seed: number, form: NewImageParamsUser) {
       this.imageGeneration.generatedImage = {
         isSaved: false,
@@ -84,6 +101,7 @@ export const useImageStore = defineStore("imageStore", {
       this.currentImage.data = this.imageGeneration.generatedImage;
     },
 
+    // Image History Actions
     updateImageHistory(data: GenereatedImage[]) {
       this.imageHistory.data = data;
     },
