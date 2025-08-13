@@ -1,12 +1,12 @@
-import { createUserImageService } from "@/services/user-images/createUserImageService";
+import { createGetUserImagesUseCase } from "@/services/use-cases/get-user-images/getUserImagesUseCase";
 import { getFirebaseServices } from "@/lib/firebaseClient";
 
 export default defineNuxtPlugin(() => {
   try {
     const { db } = getFirebaseServices();
-    const userImageService = createUserImageService(db);
+    const getUserImagesService = createGetUserImagesUseCase(db);
     return {
-      provide: { userImageService }
+      provide: { getUserImagesService}
     };
   } catch (error) {
     console.error("Failed to initialize user image service:", error);
