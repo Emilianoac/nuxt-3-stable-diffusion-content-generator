@@ -2,7 +2,8 @@ import { vi } from "vitest";
 import { mockNuxtImport } from "@nuxt/test-utils/runtime";
 
 export const mockAuthService = {
-  getidToken: vi.fn(() => Promise.resolve("mock-token")),   
+  getidToken: vi.fn(() => Promise.resolve("mock-token")),  
+  getUserId: vi.fn(() => "mock-user-id"), 
 };
 
 export const mockStorageService = {
